@@ -1,0 +1,9 @@
+# Binaries for programs and plugins
+main
+openapi2cli
+*.exe
+*.exe~
+*.so
+*.dylib
+*.dll
+vls.log
