@@ -3,23 +3,23 @@ module open_api
 struct OpenApi {
     openapi       string                [required]
     info          Info                  [required]
-    servers       []Server
     paths         Paths                 [required]
+    external_docs ExternalDocumentation [json: 'externalDocs']
+    servers       []Server
     components    Components
     security      []SecurityRequirement
     tags          []Tag
-    external_docs ExternalDocumentation [json: 'externalDocs']
 }
 
 // ---------------------------------------- //
 
 struct Info {
     title            string [required]
-    description      string
+    version          string [required]
     terms_of_service string [json: 'termsOfService']
+    description      string
     contact          Contact
     license          License
-    version          string [required]
 }
 
 struct Contact {
@@ -62,13 +62,13 @@ struct Callback {
 // ---------------------------------------- //
 
 struct Operation {
+    external_docs ExternalDocumentation             [json: 'externalDocs']
+    operation_id  string                            [json: 'operationId']
+    request_body  RequestBody | Reference           [json: 'requestBody']
     tags          []string
     summary       string
     description   string
-    external_docs ExternalDocumentation             [json: 'externalDocs']
-    operation_id  string                            [json: 'operationId']
     parameters    []Parameter | Reference
-    request_body  RequestBody | Reference           [json: 'requestBody']
     responses     Responses
     callbacks     []map[string]Callback | Reference
     deprecated    bool
@@ -79,13 +79,13 @@ struct Operation {
 // ---------------------------------------- //
 
 struct Components {
+    security_schemes []map[string]SecurityScheme | Reference [json: 'SecuritySchemes']
+    request_bodies   []map[string]RequestBody | Reference    [json: 'requestBodies']
     schemas          []map[string]Schema | Reference
     responses        []map[string]Response | Reference
     parameters       []map[string]Parameter | Reference
     examples         []map[string]Example | Reference
-    request_bodies   []map[string]RequestBody | Reference    [json: 'requestBodies']
     headers          []map[string]Header | Reference
-    security_schemes []map[string]SecurityScheme | Reference [json: 'SecuritySchemes']
     links            []map[string]Link | Reference
     callbacks        []map[string]Callback | Reference
 }
@@ -98,35 +98,35 @@ struct SecurityRequirement {
 
 struct SecurityScheme {
     security_type       string     [required; json: 'type']
-    description         string
-    name                string     [required]
     location            string     [required; json: 'in']
-    scheme              string     [required]
-    bearer_format       string     [json: 'bearerFormat']
-    flows               OAuthFlows [required]
     open_id_connect_url string     [required; json: 'openIdConnectUrl']
+    name                string     [required]
+    scheme              string     [required]
+    flows               OAuthFlows [required]
+    bearer_format       string     [json: 'bearerFormat']
+    description         string
 }
 
 struct OAuthFlows {
-    implicit           OAuthFlow
-    password           OAuthFlow
     client_credentials OAuthFlow [json: 'clientCredentials']
     authorization_code OAuthFlow [json: 'authorizationCode']
+    implicit           OAuthFlow
+    password           OAuthFlow
 }
 
 struct OAuthFlow {
     authorization_url string              [required; json: 'authorizationUrl']
     token_url         string              [required; json: 'tokenUrl']
-    refresh_url       string              [json: 'refreshUrl']
     scopes            []map[string]string [required]
+    refresh_url       string              [json: 'refreshUrl']
 }
 
 // ---------------------------------------- //
 
 struct Tag {
     name          string                [required]
-    description   string
     external_docs ExternalDocumentation [json: 'externalDocs']
+    description   string
 }
 
 struct ExternalDocumentation {
@@ -137,12 +137,12 @@ struct ExternalDocumentation {
 // ---------------------------------------- //
 
 struct Parameter { // Todo: To be completed
-    name              string [required]
     location          string [required; json: 'in']
-    description       string
+    name              string [required]
     required          bool   [required]
-    deprecated        bool
     allow_empty_value bool   [json: 'allowEmptyValue']
+    description       string
+    deprecated        bool
 }
 
 // ---------------------------------------- //
@@ -169,25 +169,25 @@ struct Reference {
 }
 
 struct Example {
+    external_value string [json: 'externalValue']
     summary        string
     description    string
     value          string // Todo: Find a way to use 'any' type here
-    external_value string [json: 'externalValue']
 }
 
 struct Encoding {
     content_type   string                          [json: 'contentType']
+    allow_reserved bool                            [json: 'allowReserved']
     headers        []map[string]Header | Reference
     style          string
     explode        bool
-    allow_reserved bool                            [json: 'allowReserved']
 }
 
 struct Header {
+    required          bool   [required]
+    allow_empty_value bool   [json: 'allowEmptyValue']
     description       string
-    required          bool [required]
     deprecated        bool
-    allow_empty_value bool [json: 'allowEmptyValue']
 }
 
 // ---------------------------------------- //
@@ -209,8 +209,8 @@ struct Response {
 struct Link {
     operation_ref string              [json: 'operationRef']
     operation_id  string              [json: 'operationId']
-    parameters    []map[string]string // Todo: Find a way to use 'any' type here
     request_body  string              [json: 'requestBody'] // Todo: Find a way to use 'any' type here
+    parameters    []map[string]string // Todo: Find a way to use 'any' type here
     description   string
     server        Server
 }
@@ -222,7 +222,7 @@ struct Server {
 }
 
 struct ServerVariable {
-    enum_values   string [json: 'enum']
     default_value string [required; json: 'default']
+    enum_values   string [json: 'enum']
     description   string
 }
