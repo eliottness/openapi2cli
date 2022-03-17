@@ -3,8 +3,8 @@ module open_api
 import json
 import os
 
-fn test_basic_info_struct() ? {
-	content := os.read_file('./src/open_api/testdata/info_object.json') ?
+fn test_full_info_struct() ? {
+	content := os.read_file('./src/open_api/testdata/info_object_full.json') ?
 	info_obj := json.decode(Info, content) ?
 	assert info_obj.title == 'Sample Pet Store App'
 	assert info_obj.version == '1.0.1'
@@ -16,3 +16,10 @@ fn test_basic_info_struct() ? {
 	assert info_obj.license.name == 'Apache 2.0'
 	assert info_obj.license.url == 'https://www.apache.org/licenses/LICENSE-2.0.html'
 }
+
+//fn test_basic_info_struct() ? {
+//	content := os.read_file('./src/open_api/testdata/info_object_basic.json') ?
+//	info_obj := json.decode(Info, content) ?
+//	assert info_obj.title == 'Sample Pet Store App'
+//	assert info_obj.version == '1.0.1'
+//}

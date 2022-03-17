@@ -3,7 +3,7 @@ module open_api
 struct OpenApi {
     openapi       string                [required]
     info          Info                  [required]
-    paths         Paths                 [required]
+    paths         []map[string]PathItem [required]
     external_docs ExternalDocumentation [json: 'externalDocs']
     servers       []Server
     components    Components
@@ -19,7 +19,7 @@ struct Info {
     terms_of_service string [json: 'termsOfService']
     description      string
     contact          Contact
-    license          License
+    license          License = License{'', ''}
 }
 
 struct Contact {

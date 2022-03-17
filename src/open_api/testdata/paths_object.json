@@ -1,0 +1,12 @@
+{
+    "openapi": "3",
+    "info": {
+        "title": "Sample Pet Store App",
+        "description": "This is a sample server for a pet store.",
+        "termsOfService": "http://example.com/terms/",
+        "license": {
+            "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.1"
+    }
+}
