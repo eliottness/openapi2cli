@@ -1,5 +1,7 @@
 module open_api
 
+import x.json2
+
 struct OpenApi {
     openapi       string                [required]
     info          Info                  [required]
@@ -14,23 +16,64 @@ struct OpenApi {
 // ---------------------------------------- //
 
 struct Info {
+mut:
     title            string [required]
     version          string [required]
     terms_of_service string [json: 'termsOfService']
     description      string
     contact          Contact
-    license          License = License{'', ''}
+    license          License
+}
+
+fn (mut info Info) from_json(f json2.Any) {
+    obj := f.as_map()
+    for k, v in obj {
+        match k {
+            'title' { info.title = v.str() }
+            'version' { info.version = v.str() }
+            'termsOfService' { info.terms_of_service = v.str() }
+			'description' { info.description = v.str() }
+			'license' { info.license = json2.decode<License>(v.json_str()) or { panic('error')}}
+			'contact' { info.contact = json2.decode<Contact>(v.json_str()) or { panic('error')}}
+            else {}
+        }
+    }
 }
 
 struct Contact {
+mut:
     name  string
     url   string
     email string
 }
 
+fn (mut contact Contact) from_json(f json2.Any) {
+    obj := f.as_map()
+    for k, v in obj {
+        match k {
+            'name' { contact.name = v.str() }
+            'url' { contact.url = v.str() }
+            'email' { contact.email = v.str() }
+            else {}
+        }
+    }
+}
+
 struct License {
+mut:
     name string [required]
     url  string
+}
+
+fn (mut license License) from_json(f json2.Any) {
+    obj := f.as_map()
+    for k, v in obj {
+        match k {
+            'name' { license.name = v.str() }
+            'url' { license.url = v.str() }
+            else {}
+        }
+    }
 }
 
 // ---------------------------------------- //
