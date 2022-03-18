@@ -2,6 +2,26 @@ module open_api
 
 import x.json2
 
+// -----------TEMPLATED FUNCTIONS---------- //
+
+fn from_json_array<T>(mut object []T, f json2.Any) {
+	obj := f.arr()
+
+	for k in obj {
+		object << json2.decode<T>(k.json_str()) or { panic('Failed $T.name decoding: $err')}
+	}
+}
+
+fn from_json_map<T>(mut object map[string]T, f json2.Any) {
+	obj := f.as_map()
+
+	for k, v in obj {
+		object[k] = json2.decode<T>(v.json_str()) or { panic('Failed $T.name decoding: $err')}
+	}
+}
+
+// ---------------------------------------- //
+
 struct OpenApi {
 mut:
     openapi       string
@@ -298,7 +318,7 @@ struct OAuthFlow {
 mut:
     authorization_url string              [required; json: 'authorizationUrl']
     token_url         string              [required; json: 'tokenUrl']
-    scopes            map[string]string [required]
+    scopes            map[string]string   [required]
     refresh_url       string              [json: 'refreshUrl']
 }
 
@@ -310,17 +330,30 @@ fn (mut flow OAuthFlow) from_json(f json2.Any) {
 
 struct Tag {
 mut:
-    name          string                [required]
-    external_docs ExternalDocumentation [json: 'externalDocs']
+    name          string
+    external_docs ExternalDocumentation
     description   string
 }
 
 fn (mut tags []Tag) from_json(f json2.Any) {
-
+	from_json_array<Tag>(mut tags, f)
 }
 
 fn (mut tag Tag) from_json(f json2.Any) {
+	obj := f.as_map()
 
+	if !('name' in obj) {
+		panic('Failed Tag decoding: "name" not specified !')
+	}
+
+	for k, v in obj {
+        match k {
+            'name' { tag.name = v.str() }
+			'externalDocs' { tag.external_docs = json2.decode<ExternalDocumentation>(v.json_str()) or { panic('Failed Tag decoding: $err')} }
+            'description' { tag.description = v.str() }
+            else {}
+        }
+    }
 }
 
 // ---------------------------------------- //
@@ -495,31 +528,58 @@ fn (mut link Link) from_json(f json2.Any) {
 
 struct Server {
 mut:
-    url         string [required]
+    url         string
     description string
     variables   map[string]ServerVariable
 }
 
-fn from_jsons<T>(mut object []T, f json2.Any) {
-}
-
 fn (mut servers []Server) from_json(f json2.Any) {
-	from_jsons<Server>(mut servers, f)
+	from_json_array<Server>(mut servers, f)
 }
 
 fn (mut server Server) from_json(f json2.Any) {
+	obj := f.as_map()
 
+	if !('url' in obj) {
+		panic('Failed Server decoding: "url" not specified !')
+	}
+
+	for k, v in obj {
+        match k {
+            'url' { server.url = v.str() }
+            'description' { server.description = v.str() }
+			'variables' { server.variables = json2.decode<map[string]ServerVariable>(v.json_str()) or { panic('Failed Server decoding: $err')} }
+            else {}
+        }
+    }
 }
 
 // ---------------------------------------- //
 
 struct ServerVariable {
 mut:
-    default_value string [required; json: 'default']
-    enum_values   string [json: 'enum']
+    default_value string
+    enum_values   string
     description   string
 }
 
-fn (mut server_variable ServerVariable) from_json(f json2.Any) {
+fn (mut object map[string]ServerVariable) from_json(f json2.Any) {
+	from_json_map<ServerVariable>(mut object, f)
+}
 
+fn (mut server_variable ServerVariable) from_json(f json2.Any) {
+	obj := f.as_map()
+
+	if !('default' in obj) {
+		panic('Failed ServerVariable decoding: "default" not specified !')
+	}
+
+	for k, v in obj {
+        match k {
+            'default' { server_variable.default_value = v.str() }
+            'enum' { server_variable.enum_values = v.str() }
+            'description' { server_variable.description = v.str() }
+            else {}
+        }
+    }
 }

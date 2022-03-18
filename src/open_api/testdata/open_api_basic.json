@@ -8,5 +8,23 @@
         "/home": {
             "description": "homepage"
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "cat"
+        },
+        {
+            "name": "dog"
+        }
+    ],
+    "servers": [
+        {
+            "url": "https://random.fr",
+            "variables": {
+                "var1": {
+                    "default": "default"
+                }
+            }
+        }
+    ]
 }
