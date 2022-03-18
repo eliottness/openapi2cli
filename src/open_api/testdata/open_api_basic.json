@@ -1,0 +1,12 @@
+{
+    "openapi": "3",
+    "info": {
+        "title": "Sample Pet Store App",
+        "version": "1.0.1"
+    },
+    "paths": {
+        "/home": {
+            "description": "homepage"
+        }
+    }
+}

@@ -4,14 +4,18 @@ import x.json2
 import os
 
 fn test_basic_info_struct() ? {
-	content := os.read_file('./src/open_api/testdata/info_object_basic.json') ?
+	content := '{ "title": "random", "version": "1.0.1" }'
 	info_obj := json2.decode<Info>(content) ?
-	assert info_obj.title == 'Sample Pet Store App'
+	assert info_obj.title == 'random'
 	assert info_obj.version == '1.0.1'
 }
 
+fn test_info_struct_without_required() ? {
+	// Todo: We need to wait the implementation of the recover keyword
+}
+
 fn test_full_info_struct() ? {
-	content := os.read_file('./src/open_api/testdata/info_object_full.json') ?
+	content := os.read_file('./src/open_api/testdata/info.json') ?
 	info_obj := json2.decode<Info>(content) ?
 	assert info_obj.title == 'Sample Pet Store App'
 	assert info_obj.version == '1.0.1'
