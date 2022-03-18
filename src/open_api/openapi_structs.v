@@ -123,7 +123,7 @@ fn (mut license License) from_json(f json2.Any) {
 
 struct PathItem {
 mut:
-    ref         string [json: '\$ref']
+    ref         string
     summary     string
     description string
     get         Operation
@@ -135,22 +135,62 @@ mut:
     patch       Operation
     trace       Operation
     servers     []Server
-    parameters  []Parameter | Reference
+    parameters  ParameterRef
 }
 
-fn (mut paths map[string]PathItem) from_json(f json2.Any) {
-
+fn clean_path_expression(path string) string {
+	mut path_copy := path.clone()
+	mut expression := path_copy.find_between('{', '}')
+	
+	for expression != '' {
+		path_copy = path_copy.replace(expression, '')
+		expression = path_copy.find_between('{', '}')
+	}
+	
+	return path_copy
 }
 
 fn (mut path_item PathItem) from_json(f json2.Any) {
-    obj := f.as_map()
-
+	obj := f.as_map()
 	for k, v in obj {
         match k {
-            'description' { path_item.description = v.str() }
+            '\$ref' { path_item.ref = v.str() }
+            'summary' { path_item.summary = v.str() }
+			'description' { path_item.description = v.str() }
+			'get' { path_item.get = json2.decode<Operation>(v.json_str()) or { panic('Failed PathItem decoding: $err')} }
+			'put' { path_item.put = json2.decode<Operation>(v.json_str()) or { panic('Failed PathItem decoding: $err')} }
+			'post' { path_item.post = json2.decode<Operation>(v.json_str()) or { panic('Failed PathItem decoding: $err')} }
+			'delete' { path_item.delete = json2.decode<Operation>(v.json_str()) or { panic('Failed PathItem decoding: $err')} }
+			'options' { path_item.options = json2.decode<Operation>(v.json_str()) or { panic('Failed PathItem decoding: $err')} }
+			'head' { path_item.head = json2.decode<Operation>(v.json_str()) or { panic('Failed PathItem decoding: $err')} }
+			'patch' { path_item.patch = json2.decode<Operation>(v.json_str()) or { panic('Failed PathItem decoding: $err')} }
+			'trace' { path_item.trace = json2.decode<Operation>(v.json_str()) or { panic('Failed PathItem decoding: $err')} }
+			'servers' { path_item.servers = json2.decode<[]Server>(v.json_str()) or { panic('Failed PathItem decoding: $err')} }
+			'parameters' { path_item.parameters = json2.decode<ParameterRef>(v.json_str()) or { panic('Failed PathItem decoding: $err')} }
             else {}
         }
     }
+}
+
+fn (mut paths map[string]PathItem) from_json(f json2.Any) {
+	obj := f.as_map()
+
+	for k, v in obj {
+		if !k.starts_with('/') {
+			panic('Failed map[string]PathItem decoding: path do not start with "/" !')
+		}
+		
+		for path in paths.keys() {
+			cleaned_path := clean_path_expression(path)
+			cleaned_k := clean_path_expression(k)
+
+			if cleaned_path == cleaned_k {
+				panic('Failed map[string]PathItem decoding: Identical path found !')
+			}
+		}
+
+		paths[k] = json2.decode<PathItem>(v.json_str()) or { panic('Failed map[string]PathItem decoding: $err')}
+	}
 }
 
 // ---------------------------------------- //
@@ -311,6 +351,10 @@ fn (mut parameter Parameter) from_json(f json2.Any) {
 
 }
 
+fn (mut parameters []Reference) from_json(f json2.Any) {
+
+}
+
 // ---------------------------------------- //
 
 struct RequestBody {
@@ -353,6 +397,13 @@ mut:
 
 fn (mut reference Reference) from_json(f json2.Any) {
 
+}
+
+// ---------------------------------------- //
+
+type ParameterRef = []Parameter|Reference
+
+fn (mut parameters ParameterRef) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -449,8 +500,11 @@ mut:
     variables   map[string]ServerVariable
 }
 
-fn (mut servers []Server) from_json(f json2.Any) {
+fn from_jsons<T>(mut object []T, f json2.Any) {
+}
 
+fn (mut servers []Server) from_json(f json2.Any) {
+	from_jsons<Server>(mut servers, f)
 }
 
 fn (mut server Server) from_json(f json2.Any) {
