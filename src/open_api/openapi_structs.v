@@ -14,8 +14,6 @@ mut:
     tags          []Tag
 }
 
-type Anything = json2.Null | []Anything | bool | f64 | map[string]Anything | string
-
 fn (mut open_api OpenApi) from_json(f json2.Any) {
     obj := f.as_map()
 	
@@ -39,8 +37,6 @@ fn (mut open_api OpenApi) from_json(f json2.Any) {
             else {}
         }
     }
-
-	println('HERE')
 }
 
 // ---------------------------------------- //
@@ -78,6 +74,8 @@ fn (mut info Info) from_json(f json2.Any) {
     }
 }
 
+// ---------------------------------------- //
+
 struct Contact {
 mut:
     name  string
@@ -96,6 +94,8 @@ fn (mut contact Contact) from_json(f json2.Any) {
         }
     }
 }
+
+// ---------------------------------------- //
 
 struct License {
 mut:
@@ -152,6 +152,8 @@ fn (mut path_item PathItem) from_json(f json2.Any) {
         }
     }
 }
+
+// ---------------------------------------- //
 
 struct Callback {
 mut:
@@ -218,6 +220,8 @@ fn (mut requirement SecurityRequirement) from_json(f json2.Any) {
 
 }
 
+// ---------------------------------------- //
+
 struct SecurityScheme {
 mut:
     security_type       string     [required; json: 'type']
@@ -234,6 +238,8 @@ fn (mut security_scheme SecurityScheme) from_json(f json2.Any) {
 
 }
 
+// ---------------------------------------- //
+
 struct OAuthFlows {
 mut:
     client_credentials OAuthFlow [json: 'clientCredentials']
@@ -245,6 +251,8 @@ mut:
 fn (mut flows OAuthFlows) from_json(f json2.Any) {
 
 }
+
+// ---------------------------------------- //
 
 struct OAuthFlow {
 mut:
@@ -274,6 +282,8 @@ fn (mut tags []Tag) from_json(f json2.Any) {
 fn (mut tag Tag) from_json(f json2.Any) {
 
 }
+
+// ---------------------------------------- //
 
 struct ExternalDocumentation {
 mut:
@@ -314,6 +324,8 @@ fn (mut request_body RequestBody) from_json(f json2.Any) {
 
 }
 
+// ---------------------------------------- //
+
 struct MediaType {
 mut:
     schema   Schema | Reference
@@ -326,9 +338,13 @@ fn (mut media_type MediaType) from_json(f json2.Any) {
 
 }
 
+// ---------------------------------------- //
+
 struct Schema {
     // Todo: flemme
 }
+
+// ---------------------------------------- //
 
 struct Reference {
 mut:
@@ -338,6 +354,8 @@ mut:
 fn (mut reference Reference) from_json(f json2.Any) {
 
 }
+
+// ---------------------------------------- //
 
 struct Example {
 mut:
@@ -351,6 +369,8 @@ fn (mut example Example) from_json(f json2.Any) {
 
 }
 
+// ---------------------------------------- //
+
 struct Encoding {
 mut:
     content_type   string                          [json: 'contentType']
@@ -363,6 +383,8 @@ mut:
 fn (mut encoding Encoding) from_json(f json2.Any) {
 
 }
+
+// ---------------------------------------- //
 
 struct Header {
 mut:
@@ -387,6 +409,8 @@ mut:
 fn (mut responses Responses) from_json(f json2.Any) {
 
 }
+
+// ---------------------------------------- //
 
 struct Response {
 mut:
@@ -416,6 +440,8 @@ fn (mut link Link) from_json(f json2.Any) {
 
 }
 
+// ---------------------------------------- //
+
 struct Server {
 mut:
     url         string [required]
@@ -430,6 +456,8 @@ fn (mut servers []Server) from_json(f json2.Any) {
 fn (mut server Server) from_json(f json2.Any) {
 
 }
+
+// ---------------------------------------- //
 
 struct ServerVariable {
 mut:
