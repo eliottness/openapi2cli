@@ -1,5 +1,6 @@
 module main
 
+import cli
 import os
 import flag
 
@@ -11,7 +12,7 @@ fn main() {
 	fp.description('A sample CLI application that prints geometric shapes to the console.')
 	fp.skip_executable()
 
-	debug := fp.bool("debug", 0, false, "Toggle Debug mode")
+	debug := fp.bool('debug', 0, false, 'Toggle Debug mode')
 
 	args := fp.finalize() ?
 	if args.len != 1 {
@@ -20,6 +21,6 @@ fn main() {
 	}
 
 	yaml_filepath := args[0] ?
-	v_filepath := build(yaml_filepath, debug) ?
+	v_filepath := cli.build(yaml_filepath, debug) ?
 	os.execvp('v', ['build', v_filepath]) ?
 }
