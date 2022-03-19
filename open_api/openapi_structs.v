@@ -4,7 +4,7 @@ import x.json2
 
 // -----------TEMPLATED FUNCTIONS---------- //
 
-fn from_json_array<T>(mut object []T, f json2.Any) {
+pub fn from_json_array<T>(mut object []T, f json2.Any) {
 	obj := f.arr()
 
 	for k in obj {
@@ -12,7 +12,7 @@ fn from_json_array<T>(mut object []T, f json2.Any) {
 	}
 }
 
-fn from_json_map<T>(mut object map[string]T, f json2.Any) {
+pub fn from_json_map<T>(mut object map[string]T, f json2.Any) {
 	obj := f.as_map()
 
 	for k, v in obj {
@@ -34,7 +34,7 @@ mut:
 	tags          []Tag
 }
 
-fn (mut open_api OpenApi) from_json(f json2.Any) {
+pub fn (mut open_api OpenApi) from_json(f json2.Any) {
 	obj := f.as_map()
 
 	required_fields := ['openapi', 'info', 'paths']
@@ -101,7 +101,7 @@ mut:
 	license          License
 }
 
-fn (mut info Info) from_json(f json2.Any) {
+pub fn (mut info Info) from_json(f json2.Any) {
 	obj := f.as_map()
 
 	required_fields := ['title', 'version']
@@ -149,7 +149,7 @@ mut:
 	email string
 }
 
-fn (mut contact Contact) from_json(f json2.Any) {
+pub fn (mut contact Contact) from_json(f json2.Any) {
 	obj := f.as_map()
 	for k, v in obj {
 		match k {
@@ -169,7 +169,7 @@ mut:
 	url  string
 }
 
-fn (mut license License) from_json(f json2.Any) {
+pub fn (mut license License) from_json(f json2.Any) {
 	obj := f.as_map()
 
 	if 'name' !in obj {
@@ -204,7 +204,7 @@ mut:
 	parameters  ParameterRef
 }
 
-fn clean_path_expression(path string) string {
+pub fn clean_path_expression(path string) string {
 	mut path_copy := path.clone()
 	mut expression := path_copy.find_between('{', '}')
 
@@ -216,7 +216,7 @@ fn clean_path_expression(path string) string {
 	return path_copy
 }
 
-fn (mut path_item PathItem) from_json(f json2.Any) {
+pub fn (mut path_item PathItem) from_json(f json2.Any) {
 	obj := f.as_map()
 	for k, v in obj {
 		match k {
@@ -284,7 +284,7 @@ fn (mut path_item PathItem) from_json(f json2.Any) {
 	}
 }
 
-fn (mut paths map[string]PathItem) from_json(f json2.Any) {
+pub fn (mut paths map[string]PathItem) from_json(f json2.Any) {
 	obj := f.as_map()
 
 	for k, v in obj {
@@ -314,7 +314,7 @@ mut:
 	callback map[string]PathItem // Todo: make it match the '{expression}' type
 }
 
-fn (mut callback Callback) from_json(f json2.Any) {
+pub fn (mut callback Callback) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -335,7 +335,7 @@ mut:
 	servers       []Server
 }
 
-fn (mut operation Operation) from_json(f json2.Any) {
+pub fn (mut operation Operation) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -353,7 +353,7 @@ mut:
 	callbacks        map[string]Callback | Reference
 }
 
-fn (mut components Components) from_json(f json2.Any) {
+pub fn (mut components Components) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -363,10 +363,10 @@ mut:
 	requirements map[string][]string // Todo: make it match the '{name}' type
 }
 
-fn (mut requirements []SecurityRequirement) from_json(f json2.Any) {
+pub fn (mut requirements []SecurityRequirement) from_json(f json2.Any) {
 }
 
-fn (mut requirement SecurityRequirement) from_json(f json2.Any) {
+pub fn (mut requirement SecurityRequirement) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -383,7 +383,7 @@ mut:
 	description         string
 }
 
-fn (mut security_scheme SecurityScheme) from_json(f json2.Any) {
+pub fn (mut security_scheme SecurityScheme) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -396,7 +396,7 @@ mut:
 	password           OAuthFlow
 }
 
-fn (mut flows OAuthFlows) from_json(f json2.Any) {
+pub fn (mut flows OAuthFlows) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -409,7 +409,7 @@ mut:
 	refresh_url       string            [json: 'refreshUrl']
 }
 
-fn (mut flow OAuthFlow) from_json(f json2.Any) {
+pub fn (mut flow OAuthFlow) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -421,11 +421,11 @@ mut:
 	description   string
 }
 
-fn (mut tags []Tag) from_json(f json2.Any) {
+pub fn (mut tags []Tag) from_json(f json2.Any) {
 	from_json_array<Tag>(mut tags, f)
 }
 
-fn (mut tag Tag) from_json(f json2.Any) {
+pub fn (mut tag Tag) from_json(f json2.Any) {
 	obj := f.as_map()
 
 	if 'name' !in obj {
@@ -458,7 +458,7 @@ mut:
 	url         string [required]
 }
 
-fn (mut external_doc ExternalDocumentation) from_json(f json2.Any) {
+pub fn (mut external_doc ExternalDocumentation) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -473,10 +473,10 @@ mut: // Todo: To be completed
 	deprecated        bool
 }
 
-fn (mut parameter Parameter) from_json(f json2.Any) {
+pub fn (mut parameter Parameter) from_json(f json2.Any) {
 }
 
-fn (mut parameters []Reference) from_json(f json2.Any) {
+pub fn (mut parameters []Reference) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -488,7 +488,7 @@ mut:
 	required    bool
 }
 
-fn (mut request_body RequestBody) from_json(f json2.Any) {
+pub fn (mut request_body RequestBody) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -501,7 +501,7 @@ mut:
 	encoding map[string]Encoding
 }
 
-fn (mut media_type MediaType) from_json(f json2.Any) {
+pub fn (mut media_type MediaType) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -517,14 +517,14 @@ mut:
 	ref string [json: '\$ref'; required]
 }
 
-fn (mut reference Reference) from_json(f json2.Any) {
+pub fn (mut reference Reference) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
 
 type ParameterRef = Reference | []Parameter
 
-fn (mut parameters ParameterRef) from_json(f json2.Any) {
+pub fn (mut parameters ParameterRef) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -537,7 +537,7 @@ mut:
 	value          json2.Any
 }
 
-fn (mut example Example) from_json(f json2.Any) {
+pub fn (mut example Example) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -551,7 +551,7 @@ mut:
 	explode        bool
 }
 
-fn (mut encoding Encoding) from_json(f json2.Any) {
+pub fn (mut encoding Encoding) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -564,7 +564,7 @@ mut:
 	deprecated        bool
 }
 
-fn (mut header Header) from_json(f json2.Any) {
+pub fn (mut header Header) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -575,7 +575,7 @@ mut:
 	http_status_code Response | Reference // Todo: find a way to do integer matching
 }
 
-fn (mut responses Responses) from_json(f json2.Any) {
+pub fn (mut responses Responses) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -588,7 +588,7 @@ mut:
 	links       map[string]Link | Reference
 }
 
-fn (mut response Response) from_json(f json2.Any) {
+pub fn (mut response Response) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -603,7 +603,7 @@ mut:
 	server        Server
 }
 
-fn (mut link Link) from_json(f json2.Any) {
+pub fn (mut link Link) from_json(f json2.Any) {
 }
 
 // ---------------------------------------- //
@@ -615,11 +615,11 @@ mut:
 	variables   map[string]ServerVariable
 }
 
-fn (mut servers []Server) from_json(f json2.Any) {
+pub fn (mut servers []Server) from_json(f json2.Any) {
 	from_json_array<Server>(mut servers, f)
 }
 
-fn (mut server Server) from_json(f json2.Any) {
+pub fn (mut server Server) from_json(f json2.Any) {
 	obj := f.as_map()
 
 	if 'url' !in obj {
@@ -653,11 +653,11 @@ mut:
 	description   string
 }
 
-fn (mut object map[string]ServerVariable) from_json(f json2.Any) {
+pub fn (mut object map[string]ServerVariable) from_json(f json2.Any) {
 	from_json_map<ServerVariable>(mut object, f)
 }
 
-fn (mut server_variable ServerVariable) from_json(f json2.Any) {
+pub fn (mut server_variable ServerVariable) from_json(f json2.Any) {
 	obj := f.as_map()
 
 	if 'default' !in obj {
