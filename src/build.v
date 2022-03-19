@@ -9,6 +9,6 @@ fn build(path string, debug bool) ?string {
 	content := os.read_file(path) ?
 	raw_json := yaml.yaml_to_json(content, replace_tags: true, debug: int(debug)) ?
 	json_data := json.decode(OpenApi, raw_json) ?
-	
+
 	return path
 }

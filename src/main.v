@@ -11,7 +11,7 @@ fn main() {
 	fp.description('A sample CLI application that prints geometric shapes to the console.')
 	fp.skip_executable()
 
-	debug := fp.bool("debug", 0, false, "Toggle Debug mode")
+	debug := fp.bool('debug', 0, false, 'Toggle Debug mode')
 
 	args := fp.finalize() ?
 	if args.len != 1 {
