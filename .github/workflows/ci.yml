@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: |
           v install --git https://github.com/jdonnerstag/vlang-yaml
-          v install .
+          v install
 
       - name: Check if code is formatted
         run: |
