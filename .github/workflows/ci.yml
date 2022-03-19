@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install dependencies
-        run: v install
+        run: v install https://github.com/jdonnerstag/vlang-yaml
 
       - name: Check if code is formatted
         run: |
