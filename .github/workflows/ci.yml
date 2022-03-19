@@ -26,7 +26,7 @@ jobs:
       - name: Check if code is formatted
         run: |
           v fmt -diff .
-          v fmt -verify .          
+          v fmt -verify .
 
       - name: Build ${{ github.event.repository.name }}
         run: v .
