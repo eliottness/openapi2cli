@@ -7,31 +7,21 @@ import x.json2 { Any, decode, raw_decode }
 pub fn decode_array<T>(src string) ?[]T {
 	res := raw_decode(src) ?
 	mut typ := []T{}
-	from_json_array<T>(mut typ, res)
+
+	for k in res.arr() {
+		typ << decode<T>(k.json_str()) or { panic('Failed $T.name decoding: $err') }
+	}
 	return typ
 }
 
 pub fn decode_map<T>(src string) ?map[string]T {
 	res := raw_decode(src) ?
 	mut typ := map[string]T{}
-	from_json_map<T>(mut typ, res)
+	
+	for k, v in res.as_map() {
+		typ[k] = decode<T>(v.json_str()) or { panic('Failed $T.name decoding: $err') }
+	}
 	return typ
-}
-
-pub fn from_json_array<T>(mut object []T, f Any) {
-	obj := f.arr()
-
-	for k in obj {
-		object << decode<T>(k.json_str()) or { panic('Failed $T.name decoding: $err') }
-	}
-}
-
-pub fn from_json_map<T>(mut object map[string]T, f Any) {
-	obj := f.as_map()
-
-	for k, v in obj {
-		object[k] = decode<T>(v.json_str()) or { panic('Failed $T.name decoding: $err') }
-	}
 }
 
 // ---------------------------------------- //
@@ -435,10 +425,6 @@ mut:
 	description   string
 }
 
-pub fn (mut tags []Tag) from_json(f Any) {
-	from_json_array<Tag>(mut tags, f)
-}
-
 pub fn (mut tag Tag) from_json(f Any) {
 	obj := f.as_map()
 
@@ -674,10 +660,6 @@ mut:
 	default_value string
 	enum_values   string
 	description   string
-}
-
-pub fn (mut object map[string]ServerVariable) from_json(f Any) {
-	from_json_map<ServerVariable>(mut object, f)
 }
 
 pub fn (mut server_variable ServerVariable) from_json(f Any) {
