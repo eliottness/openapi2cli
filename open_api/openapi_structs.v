@@ -14,6 +14,26 @@ pub fn decode_array<T>(src string) ?[]T {
 	return typ
 }
 
+pub fn decode_array2<T>(src string) ?[]Reference | T {
+	res := raw_decode(src) ?
+	mut typ := []Reference | T{}
+	for k in res.arr() {
+		if tmp := decode<Reference>(k.json_str()) {
+			typ << tmp
+		} else if tmp := decode<T>(k.json_str()) {
+			typ << tmp
+		}
+
+		// elt := from_json<T>(k) as T
+		// if elt is T {
+		//	typ << elt
+		//} else if elt is Reference {
+		//	typ << elt
+		//}
+	}
+	return typ
+}
+
 pub fn decode_map<T>(src string) ?map[string]T {
 	res := raw_decode(src) ?
 	mut typ := map[string]T{}
@@ -205,7 +225,7 @@ mut:
 	patch       Operation
 	trace       Operation
 	servers     []Server
-	parameters  []ParameterRef<Parameter>
+	parameters  []Reference | Parameter
 }
 
 pub fn clean_path_expression(path string) string {
@@ -279,7 +299,7 @@ pub fn (mut path_item PathItem) from_json(f Any) {
 				}
 			}
 			'parameters' {
-				path_item.parameters = decode<[]ParameterRef<Parameter>>(v.json_str()) or {
+				path_item.parameters = decode_array2<Parameter>(v.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
@@ -331,7 +351,7 @@ mut:
 	tags          []string
 	summary       string
 	description   string
-	parameters    []Parameter | Reference
+	parameters    []Reference | Parameter
 	responses     Responses
 	callbacks     map[string]Callback | Reference
 	deprecated    bool
@@ -350,7 +370,7 @@ mut:
 	request_bodies   map[string]RequestBody | Reference    [json: 'requestBodies']
 	schemas          map[string]Schema | Reference
 	responses        map[string]Response | Reference
-	parameters       map[string]Parameter | Reference
+	parameters       map[string]Reference | Parameter
 	examples         map[string]Example | Reference
 	headers          map[string]Header | Reference
 	links            map[string]Link | Reference
@@ -518,14 +538,14 @@ pub fn (mut reference Reference) from_json(f Any) {
 
 type ParameterRef<T> = Reference | T
 
-pub fn (mut object []ParameterRef<Parameter>) from_json(f Any) {
-	obj := f.arr()
-
-	for k in obj {
-		str := raw_decode(k.json_str()) or { panic('') }
-		object << from_json<Parameter>(str)
-	}
-}
+// pub fn (mut object []ParameterRef<T>) from_json<T>(f Any) {
+//	obj := f.arr()
+//
+//	for k in obj {
+//		str := raw_decode(k.json_str()) or { panic('') }
+//		object << from_json<Parameter>(str)
+//	}
+//}
 
 pub fn from_json<T>(f Any) ParameterRef<T> {
 	if tmp := decode<Reference>(f.json_str()) {
