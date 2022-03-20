@@ -1,27 +1,37 @@
 module open_api
 
-import x.json2
+import x.json2 { Any, decode, raw_decode }
 
 // -----------TEMPLATED FUNCTIONS---------- //
 
-pub fn from_json_array<T>(mut object []T, f json2.Any) {
+pub fn decode_array<T>(src string) ?[]T {
+	res := raw_decode(src) ?
+	mut typ := []T{}
+	from_json_array<T>(mut typ, res)
+	return typ
+}
+
+pub fn decode_map<T>(src string) ?map[string]T {
+	res := raw_decode(src) ?
+	mut typ := map[string]T{}
+	from_json_map<T>(mut typ, res)
+	return typ
+}
+
+pub fn from_json_array<T>(mut object []T, f Any) {
 	obj := f.arr()
 
 	for k in obj {
-		object << json2.decode<T>(k.json_str()) or { panic('Failed $T.name decoding: $err') }
+		object << decode<T>(k.json_str()) or { panic('Failed $T.name decoding: $err') }
 	}
 }
 
-pub fn from_json_map<T>(mut object map[string]T, f json2.Any) {
+pub fn from_json_map<T>(mut object map[string]T, f Any) {
 	obj := f.as_map()
 
 	for k, v in obj {
-		object[k] = json2.decode<T>(v.json_str()) or { panic('Failed $T.name decoding: $err') }
+		object[k] = decode<T>(v.json_str()) or { panic('Failed $T.name decoding: $err') }
 	}
-}
-
-pub fn from_json_sum_type<T, V>(f json2.Any) ?T {
-	return json2.decode<V>(f.json_str()) or { json2.decode<Reference>(f.json_str()) ? }
 }
 
 // ---------------------------------------- //
@@ -38,7 +48,7 @@ mut:
 	tags          []Tag
 }
 
-pub fn (mut open_api OpenApi) from_json(f json2.Any) {
+pub fn (mut open_api OpenApi) from_json(f Any) {
 	obj := f.as_map()
 
 	required_fields := ['openapi', 'info', 'paths']
@@ -54,37 +64,37 @@ pub fn (mut open_api OpenApi) from_json(f json2.Any) {
 				open_api.openapi = v.str()
 			}
 			'info' {
-				open_api.info = json2.decode<Info>(v.json_str()) or {
+				open_api.info = decode<Info>(v.json_str()) or {
 					panic('Failed OpenApi decoding: $err')
 				}
 			}
 			'paths' {
-				open_api.paths = json2.decode<map[string]PathItem>(v.json_str()) or {
+				open_api.paths = decode<map[string]PathItem>(v.json_str()) or {
 					panic('Failed OpenApi decoding: $err')
 				}
 			}
 			'externalDocs' {
-				open_api.external_docs = json2.decode<ExternalDocumentation>(v.json_str()) or {
+				open_api.external_docs = decode<ExternalDocumentation>(v.json_str()) or {
 					panic('Failed OpenApi decoding: $err')
 				}
 			}
 			'servers' {
-				open_api.servers = json2.decode<[]Server>(v.json_str()) or {
+				open_api.servers = decode_array<Server>(v.json_str()) or {
 					panic('Failed OpenApi decoding: $err')
 				}
 			}
 			'components' {
-				open_api.components = json2.decode<Components>(v.json_str()) or {
+				open_api.components = decode<Components>(v.json_str()) or {
 					panic('Failed OpenApi decoding: $err')
 				}
 			}
 			'security' {
-				open_api.security = json2.decode<[]SecurityRequirement>(v.json_str()) or {
+				open_api.security = decode_array<SecurityRequirement>(v.json_str()) or {
 					panic('Failed OpenApi decoding: $err')
 				}
 			}
 			'tags' {
-				open_api.tags = json2.decode<[]Tag>(v.json_str()) or {
+				open_api.tags = decode_array<Tag>(v.json_str()) or {
 					panic('Failed OpenApi decoding: $err')
 				}
 			}
@@ -105,7 +115,7 @@ mut:
 	license          License
 }
 
-pub fn (mut info Info) from_json(f json2.Any) {
+pub fn (mut info Info) from_json(f Any) {
 	obj := f.as_map()
 
 	required_fields := ['title', 'version']
@@ -130,12 +140,12 @@ pub fn (mut info Info) from_json(f json2.Any) {
 				info.description = v.str()
 			}
 			'contact' {
-				info.contact = json2.decode<Contact>(v.json_str()) or {
+				info.contact = decode<Contact>(v.json_str()) or {
 					panic('Failed Info decoding: $err')
 				}
 			}
 			'license' {
-				info.license = json2.decode<License>(v.json_str()) or {
+				info.license = decode<License>(v.json_str()) or {
 					panic('Failed Info decoding: $err')
 				}
 			}
@@ -153,7 +163,7 @@ mut:
 	email string
 }
 
-pub fn (mut contact Contact) from_json(f json2.Any) {
+pub fn (mut contact Contact) from_json(f Any) {
 	obj := f.as_map()
 	for k, v in obj {
 		match k {
@@ -173,7 +183,7 @@ mut:
 	url  string
 }
 
-pub fn (mut license License) from_json(f json2.Any) {
+pub fn (mut license License) from_json(f Any) {
 	obj := f.as_map()
 
 	if 'name' !in obj {
@@ -220,7 +230,7 @@ pub fn clean_path_expression(path string) string {
 	return path_copy
 }
 
-pub fn (mut path_item PathItem) from_json(f json2.Any) {
+pub fn (mut path_item PathItem) from_json(f Any) {
 	obj := f.as_map()
 	for k, v in obj {
 		match k {
@@ -234,52 +244,52 @@ pub fn (mut path_item PathItem) from_json(f json2.Any) {
 				path_item.description = v.str()
 			}
 			'get' {
-				path_item.get = json2.decode<Operation>(v.json_str()) or {
+				path_item.get = decode<Operation>(v.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
 			'put' {
-				path_item.put = json2.decode<Operation>(v.json_str()) or {
+				path_item.put = decode<Operation>(v.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
 			'post' {
-				path_item.post = json2.decode<Operation>(v.json_str()) or {
+				path_item.post = decode<Operation>(v.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
 			'delete' {
-				path_item.delete = json2.decode<Operation>(v.json_str()) or {
+				path_item.delete = decode<Operation>(v.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
 			'options' {
-				path_item.options = json2.decode<Operation>(v.json_str()) or {
+				path_item.options = decode<Operation>(v.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
 			'head' {
-				path_item.head = json2.decode<Operation>(v.json_str()) or {
+				path_item.head = decode<Operation>(v.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
 			'patch' {
-				path_item.patch = json2.decode<Operation>(v.json_str()) or {
+				path_item.patch = decode<Operation>(v.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
 			'trace' {
-				path_item.trace = json2.decode<Operation>(v.json_str()) or {
+				path_item.trace = decode<Operation>(v.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
 			'servers' {
-				path_item.servers = json2.decode<[]Server>(v.json_str()) or {
+				path_item.servers = decode_array<Server>(v.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
 			'parameters' {
-				path_item.parameters = json2.decode<[]ParameterRef<Parameter>>(v.json_str()) or {
+				path_item.parameters = decode<[]ParameterRef<Parameter>>(v.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
@@ -288,7 +298,7 @@ pub fn (mut path_item PathItem) from_json(f json2.Any) {
 	}
 }
 
-pub fn (mut paths map[string]PathItem) from_json(f json2.Any) {
+pub fn (mut paths map[string]PathItem) from_json(f Any) {
 	obj := f.as_map()
 
 	for k, v in obj {
@@ -305,7 +315,7 @@ pub fn (mut paths map[string]PathItem) from_json(f json2.Any) {
 			}
 		}
 
-		paths[k] = json2.decode<PathItem>(v.json_str()) or {
+		paths[k] = decode<PathItem>(v.json_str()) or {
 			panic('Failed map[string]PathItem decoding: $err')
 		}
 	}
@@ -318,7 +328,7 @@ mut:
 	callback map[string]PathItem // Todo: make it match the '{expression}' type
 }
 
-pub fn (mut callback Callback) from_json(f json2.Any) {
+pub fn (mut callback Callback) from_json(f Any) {
 }
 
 // ---------------------------------------- //
@@ -339,7 +349,7 @@ mut:
 	servers       []Server
 }
 
-pub fn (mut operation Operation) from_json(f json2.Any) {
+pub fn (mut operation Operation) from_json(f Any) {
 }
 
 // ---------------------------------------- //
@@ -357,7 +367,7 @@ mut:
 	callbacks        map[string]Callback | Reference
 }
 
-pub fn (mut components Components) from_json(f json2.Any) {
+pub fn (mut components Components) from_json(f Any) {
 }
 
 // ---------------------------------------- //
@@ -367,10 +377,10 @@ mut:
 	requirements map[string][]string // Todo: make it match the '{name}' type
 }
 
-pub fn (mut requirements []SecurityRequirement) from_json(f json2.Any) {
+pub fn (mut requirements []SecurityRequirement) from_json(f Any) {
 }
 
-pub fn (mut requirement SecurityRequirement) from_json(f json2.Any) {
+pub fn (mut requirement SecurityRequirement) from_json(f Any) {
 }
 
 // ---------------------------------------- //
@@ -387,7 +397,7 @@ mut:
 	description         string
 }
 
-pub fn (mut security_scheme SecurityScheme) from_json(f json2.Any) {
+pub fn (mut security_scheme SecurityScheme) from_json(f Any) {
 }
 
 // ---------------------------------------- //
@@ -400,7 +410,7 @@ mut:
 	password           OAuthFlow
 }
 
-pub fn (mut flows OAuthFlows) from_json(f json2.Any) {
+pub fn (mut flows OAuthFlows) from_json(f Any) {
 }
 
 // ---------------------------------------- //
@@ -413,7 +423,7 @@ mut:
 	refresh_url       string            [json: 'refreshUrl']
 }
 
-pub fn (mut flow OAuthFlow) from_json(f json2.Any) {
+pub fn (mut flow OAuthFlow) from_json(f Any) {
 }
 
 // ---------------------------------------- //
@@ -425,11 +435,11 @@ mut:
 	description   string
 }
 
-pub fn (mut tags []Tag) from_json(f json2.Any) {
+pub fn (mut tags []Tag) from_json(f Any) {
 	from_json_array<Tag>(mut tags, f)
 }
 
-pub fn (mut tag Tag) from_json(f json2.Any) {
+pub fn (mut tag Tag) from_json(f Any) {
 	obj := f.as_map()
 
 	if 'name' !in obj {
@@ -442,7 +452,7 @@ pub fn (mut tag Tag) from_json(f json2.Any) {
 				tag.name = v.str()
 			}
 			'externalDocs' {
-				tag.external_docs = json2.decode<ExternalDocumentation>(v.json_str()) or {
+				tag.external_docs = decode<ExternalDocumentation>(v.json_str()) or {
 					panic('Failed Tag decoding: $err')
 				}
 			}
@@ -462,7 +472,7 @@ mut:
 	url         string [required]
 }
 
-pub fn (mut external_doc ExternalDocumentation) from_json(f json2.Any) {
+pub fn (mut external_doc ExternalDocumentation) from_json(f Any) {
 }
 
 // ---------------------------------------- //
@@ -477,10 +487,10 @@ mut: // Todo: To be completed
 	deprecated        bool
 }
 
-pub fn (mut parameter Parameter) from_json(f json2.Any) {
+pub fn (mut parameter Parameter) from_json(f Any) {
 }
 
-pub fn (mut parameters []Reference) from_json(f json2.Any) {
+pub fn (mut parameters []Reference) from_json(f Any) {
 }
 
 // ---------------------------------------- //
@@ -492,7 +502,7 @@ mut:
 	required    bool
 }
 
-pub fn (mut request_body RequestBody) from_json(f json2.Any) {
+pub fn (mut request_body RequestBody) from_json(f Any) {
 }
 
 // ---------------------------------------- //
@@ -500,12 +510,12 @@ pub fn (mut request_body RequestBody) from_json(f json2.Any) {
 struct MediaType {
 mut:
 	schema   Schema | Reference
-	example  json2.Any
+	example  Any
 	examples map[string]Example | Reference
 	encoding map[string]Encoding
 }
 
-pub fn (mut media_type MediaType) from_json(f json2.Any) {
+pub fn (mut media_type MediaType) from_json(f Any) {
 }
 
 // ---------------------------------------- //
@@ -521,40 +531,40 @@ mut:
 	ref string [json: '\$ref'; required]
 }
 
-pub fn (mut reference Reference) from_json(f json2.Any) {
+pub fn (mut reference Reference) from_json(f Any) {
 }
 
 // ---------------------------------------- //
 
 type ParameterRef<T> = Reference | T
 
-pub fn (mut object []ParameterRef<Parameter>) from_json(f json2.Any) {
+pub fn (mut object []ParameterRef<Parameter>) from_json(f Any) {
 	obj := f.arr()
 
 	for k in obj {
-		str := json2.raw_decode(k.json_str()) or { panic('') }
+		str := raw_decode(k.json_str()) or { panic('') }
 		object << from_json<Parameter>(str)
 	}
 }
 
-pub fn from_json<T>(f json2.Any) ParameterRef<T> {
-	if tmp := json2.decode<Reference>(f.json_str()) {
+pub fn from_json<T>(f Any) ParameterRef<T> {
+	if tmp := decode<Reference>(f.json_str()) {
 		return tmp
 	}
-	return json2.decode<T>(f.json_str()) or { panic('') }
+	return decode<T>(f.json_str()) or { panic('') }
 }
 
 // ---------------------------------------- //
 
 struct Example {
 mut:
-	external_value string    [json: 'externalValue']
+	external_value string [json: 'externalValue']
 	summary        string
 	description    string
-	value          json2.Any
+	value          Any
 }
 
-pub fn (mut example Example) from_json(f json2.Any) {
+pub fn (mut example Example) from_json(f Any) {
 }
 
 // ---------------------------------------- //
@@ -568,7 +578,7 @@ mut:
 	explode        bool
 }
 
-pub fn (mut encoding Encoding) from_json(f json2.Any) {
+pub fn (mut encoding Encoding) from_json(f Any) {
 }
 
 // ---------------------------------------- //
@@ -581,7 +591,7 @@ mut:
 	deprecated        bool
 }
 
-pub fn (mut header Header) from_json(f json2.Any) {
+pub fn (mut header Header) from_json(f Any) {
 }
 
 // ---------------------------------------- //
@@ -592,7 +602,7 @@ mut:
 	http_status_code Response | Reference // Todo: find a way to do integer matching
 }
 
-pub fn (mut responses Responses) from_json(f json2.Any) {
+pub fn (mut responses Responses) from_json(f Any) {
 }
 
 // ---------------------------------------- //
@@ -605,22 +615,22 @@ mut:
 	links       map[string]Link | Reference
 }
 
-pub fn (mut response Response) from_json(f json2.Any) {
+pub fn (mut response Response) from_json(f Any) {
 }
 
 // ---------------------------------------- //
 
 struct Link {
 mut:
-	operation_ref string               [json: 'operationRef']
-	operation_id  string               [json: 'operationId']
-	request_body  json2.Any            [json: 'requestBody']
-	parameters    map[string]json2.Any
+	operation_ref string         [json: 'operationRef']
+	operation_id  string         [json: 'operationId']
+	request_body  Any            [json: 'requestBody']
+	parameters    map[string]Any
 	description   string
 	server        Server
 }
 
-pub fn (mut link Link) from_json(f json2.Any) {
+pub fn (mut link Link) from_json(f Any) {
 }
 
 // ---------------------------------------- //
@@ -632,11 +642,7 @@ mut:
 	variables   map[string]ServerVariable
 }
 
-pub fn (mut servers []Server) from_json(f json2.Any) {
-	from_json_array<Server>(mut servers, f)
-}
-
-pub fn (mut server Server) from_json(f json2.Any) {
+pub fn (mut server Server) from_json(f Any) {
 	obj := f.as_map()
 
 	if 'url' !in obj {
@@ -652,7 +658,7 @@ pub fn (mut server Server) from_json(f json2.Any) {
 				server.description = v.str()
 			}
 			'variables' {
-				server.variables = json2.decode<map[string]ServerVariable>(v.json_str()) or {
+				server.variables = decode_map<ServerVariable>(v.json_str()) or {
 					panic('Failed Server decoding: $err')
 				}
 			}
@@ -670,11 +676,11 @@ mut:
 	description   string
 }
 
-pub fn (mut object map[string]ServerVariable) from_json(f json2.Any) {
+pub fn (mut object map[string]ServerVariable) from_json(f Any) {
 	from_json_map<ServerVariable>(mut object, f)
 }
 
-pub fn (mut server_variable ServerVariable) from_json(f json2.Any) {
+pub fn (mut server_variable ServerVariable) from_json(f Any) {
 	obj := f.as_map()
 
 	if 'default' !in obj {
