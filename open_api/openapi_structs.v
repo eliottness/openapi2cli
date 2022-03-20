@@ -20,6 +20,10 @@ pub fn from_json_map<T>(mut object map[string]T, f json2.Any) {
 	}
 }
 
+pub fn from_json_sum_type<T, V>(f json2.Any) ?T {
+	return json2.decode<V>(f.json_str()) or { json2.decode<Reference>(f.json_str()) ? }
+}
+
 // ---------------------------------------- //
 
 struct OpenApi {
@@ -201,7 +205,7 @@ mut:
 	patch       Operation
 	trace       Operation
 	servers     []Server
-	parameters  ParameterRef
+	parameters  []ParameterRef<Parameter>
 }
 
 pub fn clean_path_expression(path string) string {
@@ -275,7 +279,7 @@ pub fn (mut path_item PathItem) from_json(f json2.Any) {
 				}
 			}
 			'parameters' {
-				path_item.parameters = json2.decode<ParameterRef>(v.json_str()) or {
+				path_item.parameters = json2.decode<[]ParameterRef<Parameter>>(v.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
@@ -522,9 +526,22 @@ pub fn (mut reference Reference) from_json(f json2.Any) {
 
 // ---------------------------------------- //
 
-type ParameterRef = Reference | []Parameter
+type ParameterRef<T> = Reference | T
 
-pub fn (mut parameters ParameterRef) from_json(f json2.Any) {
+pub fn (mut object []ParameterRef<Parameter>) from_json(f json2.Any) {
+	obj := f.arr()
+
+	for k in obj {
+		str := json2.raw_decode(k.json_str()) or { panic('') }
+		object << from_json<Parameter>(str)
+	}
+}
+
+pub fn from_json<T>(f json2.Any) ParameterRef<T> {
+	if tmp := json2.decode<Reference>(f.json_str()) {
+		return tmp
+	}
+	return json2.decode<T>(f.json_str()) or { panic('') }
 }
 
 // ---------------------------------------- //
