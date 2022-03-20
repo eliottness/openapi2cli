@@ -17,7 +17,7 @@ pub fn decode_array<T>(src string) ?[]T {
 pub fn decode_map<T>(src string) ?map[string]T {
 	res := raw_decode(src) ?
 	mut typ := map[string]T{}
-	
+
 	for k, v in res.as_map() {
 		typ[k] = decode<T>(v.json_str()) or { panic('Failed $T.name decoding: $err') }
 	}
@@ -367,9 +367,6 @@ mut:
 	requirements map[string][]string // Todo: make it match the '{name}' type
 }
 
-pub fn (mut requirements []SecurityRequirement) from_json(f Any) {
-}
-
 pub fn (mut requirement SecurityRequirement) from_json(f Any) {
 }
 
@@ -474,9 +471,6 @@ mut: // Todo: To be completed
 }
 
 pub fn (mut parameter Parameter) from_json(f Any) {
-}
-
-pub fn (mut parameters []Reference) from_json(f Any) {
 }
 
 // ---------------------------------------- //
