@@ -15,7 +15,7 @@ fn test_info_struct_without_required() ? {
 }
 
 fn test_full_info_struct() ? {
-	content := os.read_file('./open_api/testdata/info.json') ?
+	content := os.read_file(@VMODROOT + '/open_api/testdata/info.json') ?
 	info_obj := json2.decode<Info>(content) ?
 	assert info_obj.title == 'Sample Pet Store App'
 	assert info_obj.version == '1.0.1'
