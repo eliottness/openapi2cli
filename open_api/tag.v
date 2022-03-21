@@ -12,9 +12,7 @@ mut:
 pub fn (mut tag Tag) from_json(f Any) {
 	obj := f.as_map()
 
-	if 'name' !in obj {
-		panic('Failed Tag decoding: "name" not specified !')
-	}
+	check_required<Tag>(obj, 'name')
 
 	for k, v in obj {
 		match k {

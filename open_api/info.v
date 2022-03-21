@@ -15,12 +15,7 @@ mut:
 pub fn (mut info Info) from_json(f Any) {
 	obj := f.as_map()
 
-	required_fields := ['title', 'version']
-	for field in required_fields {
-		if field !in obj {
-			panic('Failed Info decoding: "$field" not specified !')
-		}
-	}
+	check_required<Info>(obj, 'title', 'version')
 
 	for k, v in obj {
 		match k {

@@ -22,7 +22,17 @@ pub fn decode_map<T>(src string) ?map[string]T {
 	return typ
 }
 
-pub fn check_required<T>(object map[string]Any, required_fields []string) {
+pub fn decode_map_sumtype<T>(src string) ?map[string]ObjectRef<T> {
+	res := raw_decode(src) ?
+	mut typ := map[string]ObjectRef<T>{}
+
+	for k, v in res.as_map() {
+		typ[k] = from_json<T>(v.json_str())
+	}
+	return typ
+}
+
+pub fn check_required<T>(object map[string]Any, required_fields ...string) {
 	for field in required_fields {
 		if field !in object {
 			panic('Failed $T.name decoding: "$field" not specified !')

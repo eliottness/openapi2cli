@@ -1,6 +1,6 @@
 module open_api
 
-import x.json2 { Any, decode, raw_decode }
+import x.json2 { raw_decode, Any, decode }
 
 struct PathItem {
 mut:

@@ -12,10 +12,8 @@ mut:
 pub fn (mut server Server) from_json(f Any) {
 	obj := f.as_map()
 
-	if 'url' !in obj {
-		panic('Failed Server decoding: "url" not specified !')
-	}
-
+	check_required<Server>(obj, 'url')
+	
 	for k, v in obj {
 		match k {
 			'url' {

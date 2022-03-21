@@ -17,7 +17,7 @@ mut:
 pub fn (mut open_api OpenApi) from_json(f Any) {
 	obj := f.as_map()
 
-	check_required<OpenApi>(obj, ['openapi', 'info', 'paths'])
+	check_required<OpenApi>(obj, 'openapi', 'info', 'paths')
 
 	for k, v in obj {
 		match k {
@@ -68,4 +68,8 @@ pub fn (mut open_api OpenApi) from_json(f Any) {
 
 struct Schema {
 	// Todo: flemme
+}
+
+pub fn (mut schema Schema) from_json(f Any) {
+
 }
