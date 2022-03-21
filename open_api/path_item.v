@@ -4,7 +4,7 @@ import x.json2 { Any, decode }
 import json
 
 struct PathItem {
-mut:
+pub mut:
 	ref         string
 	summary     string
 	description string

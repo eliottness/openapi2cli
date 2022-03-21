@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 
 struct Operation {
-mut:
+pub mut:
 	external_docs ExternalDocumentation           [json: 'externalDocs']
 	operation_id  string                          [json: 'operationId']
 	request_body  RequestBody | Reference         [json: 'requestBody']
@@ -22,7 +22,7 @@ pub fn (mut operation Operation) from_json(json Any) {
 }
 
 struct ExternalDocumentation {
-mut:
+pub mut:
 	description string
 	url         string [required]
 }

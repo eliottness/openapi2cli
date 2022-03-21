@@ -4,7 +4,7 @@ import x.json2 { Any }
 import json
 
 struct Server {
-mut:
+pub mut:
 	url         string
 	description string
 	variables   map[string]ServerVariable
@@ -36,7 +36,7 @@ pub fn (mut server Server) from_json(json Any) {
 // ---------------------------------------- //
 
 struct ServerVariable {
-mut:
+pub mut:
 	default_value string
 	enum_values   string
 	description   string

@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 
 struct Header {
-mut:
+pub mut:
 	required          bool   [required]
 	allow_empty_value bool   [json: 'allowEmptyValue']
 	description       string

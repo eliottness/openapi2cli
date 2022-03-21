@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 
 struct Parameter {
-mut: // Todo: To be completed
+pub mut: // Todo: To be completed
 	location          string [json: 'in'; required]
 	name              string [required]
 	required          bool   [required]

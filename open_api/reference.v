@@ -4,7 +4,7 @@ import x.json2 { Any, decode, raw_decode }
 import json
 
 struct Reference {
-mut:
+pub mut:
 	ref string [json: '\$ref'; required]
 }
 

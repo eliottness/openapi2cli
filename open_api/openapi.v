@@ -4,7 +4,7 @@ import x.json2 { Any, decode }
 import json
 
 struct OpenApi {
-mut:
+pub mut:
 	openapi       string
 	info          Info
 	paths         map[string]PathItem

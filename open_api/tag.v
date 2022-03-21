@@ -4,7 +4,7 @@ import x.json2 { Any, decode }
 import json
 
 struct Tag {
-mut:
+pub mut:
 	name          string
 	external_docs ExternalDocumentation
 	description   string

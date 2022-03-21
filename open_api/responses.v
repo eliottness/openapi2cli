@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 
 struct Responses {
-mut:
+pub mut:
 	default_code     Response | Reference [json: 'default']
 	http_status_code Response | Reference // Todo: find a way to do integer matching
 }
@@ -14,7 +14,7 @@ pub fn (mut responses Responses) from_json(json Any) {
 // ---------------------------------------- //
 
 struct Response {
-mut:
+pub mut:
 	description string                        [required]
 	headers     map[string]Header | Reference
 	content     map[string]MediaType

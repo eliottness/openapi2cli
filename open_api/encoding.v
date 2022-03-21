@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 
 struct Encoding {
-mut:
+pub mut:
 	content_type   string                        [json: 'contentType']
 	allow_reserved bool                          [json: 'allowReserved']
 	headers        map[string]Header | Reference

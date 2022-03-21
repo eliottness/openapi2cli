@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 
 struct Callback {
-mut:
+pub mut:
 	callback map[string]PathItem // Todo: make it match the '{expression}' type
 }
 

@@ -4,7 +4,7 @@ import x.json2 { Any, decode }
 import json
 
 struct Info {
-mut:
+pub mut:
 	title            string
 	version          string
 	terms_of_service string
@@ -50,7 +50,7 @@ pub fn (mut info Info) from_json(json Any) {
 // ---------------------------------------- //
 
 struct Contact {
-mut:
+pub mut:
 	name  string
 	url   string
 	email string
@@ -71,7 +71,7 @@ pub fn (mut contact Contact) from_json(json Any) {
 // ---------------------------------------- //
 
 struct License {
-mut:
+pub mut:
 	name string
 	url  string
 }
