@@ -12,7 +12,6 @@ pub mut:
 
 pub fn (mut server Server) from_json(json Any) {
 	object := json.as_map()
-
 	check_required<Server>(object, 'url')
 
 	for key, value in object {
@@ -44,10 +43,7 @@ pub mut:
 
 pub fn (mut server_variable ServerVariable) from_json(json Any) {
 	object := json.as_map()
-
-	if 'default' !in object {
-		panic('Failed ServerVariable decoding: "default" not specified !')
-	}
+	check_required<ServerVariable>(object, 'default')
 
 	for key, value in object {
 		match key {

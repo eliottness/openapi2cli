@@ -12,7 +12,6 @@ pub mut:
 
 pub fn (mut tag Tag) from_json(json Any) {
 	object := json.as_map()
-
 	check_required<Tag>(object, 'name')
 
 	for key, value in object {

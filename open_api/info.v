@@ -15,7 +15,6 @@ pub mut:
 
 pub fn (mut info Info) from_json(json Any) {
 	object := json.as_map()
-
 	check_required<Info>(object, 'title', 'version')
 
 	for key, value in object {

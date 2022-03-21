@@ -17,7 +17,6 @@ pub mut:
 
 pub fn (mut open_api OpenApi) from_json(json Any) {
 	object := json.as_map()
-
 	check_required<OpenApi>(object, 'openapi', 'info', 'paths')
 
 	for key, value in object {

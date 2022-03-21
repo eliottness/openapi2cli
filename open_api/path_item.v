@@ -33,8 +33,7 @@ pub fn clean_path_expression(path string) string {
 }
 
 pub fn (mut path_item PathItem) from_json(json Any) {
-	object := json.as_map()
-	for key, value in object {
+	for key, value in json.as_map() {
 		match key {
 			'\$ref' {
 				path_item.ref = value.str()
@@ -101,9 +100,7 @@ pub fn (mut path_item PathItem) from_json(json Any) {
 }
 
 pub fn (mut paths map[string]PathItem) from_json(json Any) {
-	object := json.as_map()
-
-	for key, value in object {
+	for key, value in json.as_map() {
 		if !key.starts_with('/') {
 			panic('Failed map[string]PathItem decoding: path do not start with "/" !')
 		}
