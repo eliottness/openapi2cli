@@ -1,11 +1,12 @@
 module open_api
 
-import x.json2 { Any, decode }
+import x.json2 { Any }
+import json
 
 struct Encoding {
 pub mut:
-	content_type   string                        [json: 'contentType']
-	allow_reserved bool                          [json: 'allowReserved']
+	content_type   string                       [json: 'contentType']
+	allow_reserved bool                         [json: 'allowReserved']
 	headers        map[string]ObjectRef<Header>
 	style          string
 	explode        bool
