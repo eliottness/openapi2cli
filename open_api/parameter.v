@@ -1,6 +1,6 @@
 module open_api
 
-import x.json2 { Any, decode, raw_decode }
+import x.json2 { Any }
 
 struct Parameter {
 mut: // Todo: To be completed
@@ -12,5 +12,5 @@ mut: // Todo: To be completed
 	deprecated        bool
 }
 
-pub fn (mut parameter Parameter) from_json(f Any) {
+pub fn (mut parameter Parameter) from_json(json Any) {
 }

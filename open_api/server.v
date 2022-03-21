@@ -1,6 +1,7 @@
 module open_api
 
-import x.json2 { Any, decode, raw_decode }
+import x.json2 { Any }
+import json
 
 struct Server {
 mut:
@@ -9,21 +10,21 @@ mut:
 	variables   map[string]ServerVariable
 }
 
-pub fn (mut server Server) from_json(f Any) {
-	obj := f.as_map()
+pub fn (mut server Server) from_json(json Any) {
+	object := json.as_map()
 
-	check_required<Server>(obj, 'url')
-	
-	for k, v in obj {
-		match k {
+	check_required<Server>(object, 'url')
+
+	for key, value in object {
+		match key {
 			'url' {
-				server.url = v.str()
+				server.url = value.str()
 			}
 			'description' {
-				server.description = v.str()
+				server.description = value.str()
 			}
 			'variables' {
-				server.variables = decode_map<ServerVariable>(v.json_str()) or {
+				server.variables = decode_map<ServerVariable>(value.json_str()) or {
 					panic('Failed Server decoding: $err')
 				}
 			}
@@ -41,18 +42,18 @@ mut:
 	description   string
 }
 
-pub fn (mut server_variable ServerVariable) from_json(f Any) {
-	obj := f.as_map()
+pub fn (mut server_variable ServerVariable) from_json(json Any) {
+	object := json.as_map()
 
-	if 'default' !in obj {
+	if 'default' !in object {
 		panic('Failed ServerVariable decoding: "default" not specified !')
 	}
 
-	for k, v in obj {
-		match k {
-			'default' { server_variable.default_value = v.str() }
-			'enum' { server_variable.enum_values = v.str() }
-			'description' { server_variable.description = v.str() }
+	for key, value in object {
+		match key {
+			'default' { server_variable.default_value = value.str() }
+			'enum' { server_variable.enum_values = value.str() }
+			'description' { server_variable.description = value.str() }
 			else {}
 		}
 	}

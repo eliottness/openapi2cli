@@ -1,6 +1,6 @@
 module open_api
 
-import x.json2 { Any, decode, raw_decode }
+import x.json2 { Any }
 
 struct Example {
 mut:
@@ -10,5 +10,5 @@ mut:
 	value          Any
 }
 
-pub fn (mut example Example) from_json(f Any) {
+pub fn (mut example Example) from_json(json Any) {
 }

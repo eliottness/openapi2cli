@@ -1,6 +1,7 @@
 module open_api
 
-import x.json2 { raw_decode, Any, decode }
+import x.json2 { Any, decode }
+import json
 
 struct PathItem {
 mut:
@@ -31,66 +32,66 @@ pub fn clean_path_expression(path string) string {
 	return path_copy
 }
 
-pub fn (mut path_item PathItem) from_json(f Any) {
-	obj := f.as_map()
-	for k, v in obj {
-		match k {
+pub fn (mut path_item PathItem) from_json(json Any) {
+	object := json.as_map()
+	for key, value in object {
+		match key {
 			'\$ref' {
-				path_item.ref = v.str()
+				path_item.ref = value.str()
 			}
 			'summary' {
-				path_item.summary = v.str()
+				path_item.summary = value.str()
 			}
 			'description' {
-				path_item.description = v.str()
+				path_item.description = value.str()
 			}
 			'get' {
-				path_item.get = decode<Operation>(v.json_str()) or {
+				path_item.get = decode<Operation>(value.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
 			'put' {
-				path_item.put = decode<Operation>(v.json_str()) or {
+				path_item.put = decode<Operation>(value.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
 			'post' {
-				path_item.post = decode<Operation>(v.json_str()) or {
+				path_item.post = decode<Operation>(value.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
 			'delete' {
-				path_item.delete = decode<Operation>(v.json_str()) or {
+				path_item.delete = decode<Operation>(value.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
 			'options' {
-				path_item.options = decode<Operation>(v.json_str()) or {
+				path_item.options = decode<Operation>(value.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
 			'head' {
-				path_item.head = decode<Operation>(v.json_str()) or {
+				path_item.head = decode<Operation>(value.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
 			'patch' {
-				path_item.patch = decode<Operation>(v.json_str()) or {
+				path_item.patch = decode<Operation>(value.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
 			'trace' {
-				path_item.trace = decode<Operation>(v.json_str()) or {
+				path_item.trace = decode<Operation>(value.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
 			'servers' {
-				path_item.servers = decode_array<Server>(v.json_str()) or {
+				path_item.servers = decode_array<Server>(value.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
 			'parameters' {
-				path_item.parameters = decode<[]ObjectRef<Parameter>>(v.json_str()) or {
+				path_item.parameters = decode<[]ObjectRef<Parameter>>(value.json_str()) or {
 					panic('Failed PathItem decoding: $err')
 				}
 			}
@@ -99,24 +100,24 @@ pub fn (mut path_item PathItem) from_json(f Any) {
 	}
 }
 
-pub fn (mut paths map[string]PathItem) from_json(f Any) {
-	obj := f.as_map()
+pub fn (mut paths map[string]PathItem) from_json(json Any) {
+	object := json.as_map()
 
-	for k, v in obj {
-		if !k.starts_with('/') {
+	for key, value in object {
+		if !key.starts_with('/') {
 			panic('Failed map[string]PathItem decoding: path do not start with "/" !')
 		}
 
 		for path in paths.keys() {
 			cleaned_path := clean_path_expression(path)
-			cleaned_k := clean_path_expression(k)
+			cleaned_k := clean_path_expression(key)
 
 			if cleaned_path == cleaned_k {
 				panic('Failed map[string]PathItem decoding: Identical path found !')
 			}
 		}
 
-		paths[k] = decode<PathItem>(v.json_str()) or {
+		paths[key] = decode<PathItem>(value.json_str()) or {
 			panic('Failed map[string]PathItem decoding: $err')
 		}
 	}

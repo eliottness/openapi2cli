@@ -1,6 +1,7 @@
 module open_api
 
-import x.json2 { Any, decode, raw_decode }
+import x.json2 { Any, decode }
+import json
 
 struct OpenApi {
 mut:
@@ -14,48 +15,48 @@ mut:
 	tags          []Tag
 }
 
-pub fn (mut open_api OpenApi) from_json(f Any) {
-	obj := f.as_map()
+pub fn (mut open_api OpenApi) from_json(json Any) {
+	object := json.as_map()
 
-	check_required<OpenApi>(obj, 'openapi', 'info', 'paths')
+	check_required<OpenApi>(object, 'openapi', 'info', 'paths')
 
-	for k, v in obj {
-		match k {
+	for key, value in object {
+		match key {
 			'openapi' {
-				open_api.openapi = v.str()
+				open_api.openapi = value.str()
 			}
 			'info' {
-				open_api.info = decode<Info>(v.json_str()) or {
+				open_api.info = decode<Info>(value.json_str()) or {
 					panic('Failed OpenApi decoding: $err')
 				}
 			}
 			'paths' {
-				open_api.paths = decode<map[string]PathItem>(v.json_str()) or {
+				open_api.paths = decode<map[string]PathItem>(value.json_str()) or {
 					panic('Failed OpenApi decoding: $err')
 				}
 			}
 			'externalDocs' {
-				open_api.external_docs = decode<ExternalDocumentation>(v.json_str()) or {
+				open_api.external_docs = decode<ExternalDocumentation>(value.json_str()) or {
 					panic('Failed OpenApi decoding: $err')
 				}
 			}
 			'servers' {
-				open_api.servers = decode_array<Server>(v.json_str()) or {
+				open_api.servers = decode_array<Server>(value.json_str()) or {
 					panic('Failed OpenApi decoding: $err')
 				}
 			}
 			'components' {
-				open_api.components = decode<Components>(v.json_str()) or {
+				open_api.components = decode<Components>(value.json_str()) or {
 					panic('Failed OpenApi decoding: $err')
 				}
 			}
 			'security' {
-				open_api.security = decode_array<SecurityRequirement>(v.json_str()) or {
+				open_api.security = decode_array<SecurityRequirement>(value.json_str()) or {
 					panic('Failed OpenApi decoding: $err')
 				}
 			}
 			'tags' {
-				open_api.tags = decode_array<Tag>(v.json_str()) or {
+				open_api.tags = decode_array<Tag>(value.json_str()) or {
 					panic('Failed OpenApi decoding: $err')
 				}
 			}
@@ -70,6 +71,5 @@ struct Schema {
 	// Todo: flemme
 }
 
-pub fn (mut schema Schema) from_json(f Any) {
-
+pub fn (mut schema Schema) from_json(json Any) {
 }

@@ -1,6 +1,6 @@
 module open_api
 
-import x.json2 { Any, decode, raw_decode }
+import x.json2 { Any }
 
 struct Encoding {
 mut:
@@ -11,5 +11,5 @@ mut:
 	explode        bool
 }
 
-pub fn (mut encoding Encoding) from_json(f Any) {
+pub fn (mut encoding Encoding) from_json(json Any) {
 }

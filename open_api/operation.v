@@ -1,6 +1,6 @@
 module open_api
 
-import x.json2 { Any, decode, raw_decode }
+import x.json2 { Any }
 
 struct Operation {
 mut:
@@ -18,7 +18,7 @@ mut:
 	servers       []Server
 }
 
-pub fn (mut operation Operation) from_json(f Any) {
+pub fn (mut operation Operation) from_json(json Any) {
 }
 
 struct ExternalDocumentation {
@@ -27,5 +27,5 @@ mut:
 	url         string [required]
 }
 
-pub fn (mut external_doc ExternalDocumentation) from_json(f Any) {
+pub fn (mut external_doc ExternalDocumentation) from_json(json Any) {
 }

@@ -1,7 +1,7 @@
 module open_api
 
-import x.json2 { Any, decode, raw_decode }
-
+import x.json2 { Any }
+import json
 
 struct Components {
 mut:
@@ -16,55 +16,55 @@ mut:
 	callbacks        map[string]ObjectRef<Callback>
 }
 
-pub fn (mut components Components) from_json(f Any) {
-	obj := f.as_map()
+pub fn (mut components Components) from_json(json Any) {
+	object := json.as_map()
 
-	check_required<OpenApi>(obj, 'openapi', 'info', 'paths')
+	check_required<OpenApi>(object, 'openapi', 'info', 'paths')
 
-	for k, v in obj {
-		match k {
+	for key, value in object {
+		match key {
 			'SecuritySchemes' {
-				components.security_schemes = decode_map_sumtype<SecurityScheme>(v.json_str()) or {
+				components.security_schemes = decode_map_sumtype<SecurityScheme>(value.json_str()) or {
 					panic('Failed Components decoding: $err')
 				}
 			}
 			'requestBodies' {
-				components.request_bodies = decode_map_sumtype<RequestBody>(v.json_str()) or {
+				components.request_bodies = decode_map_sumtype<RequestBody>(value.json_str()) or {
 					panic('Failed Components decoding: $err')
 				}
 			}
 			'schemas' {
-				components.schemas = decode_map_sumtype<Schema>(v.json_str()) or {
+				components.schemas = decode_map_sumtype<Schema>(value.json_str()) or {
 					panic('Failed Components decoding: $err')
 				}
 			}
 			'responses' {
-				components.responses = decode_map_sumtype<Response>(v.json_str()) or {
+				components.responses = decode_map_sumtype<Response>(value.json_str()) or {
 					panic('Failed Components decoding: $err')
 				}
 			}
 			'parameters' {
-				components.parameters = decode_map_sumtype<Parameter>(v.json_str()) or {
+				components.parameters = decode_map_sumtype<Parameter>(value.json_str()) or {
 					panic('Failed Components decoding: $err')
 				}
 			}
 			'examples' {
-				components.examples = decode_map_sumtype<Example>(v.json_str()) or {
+				components.examples = decode_map_sumtype<Example>(value.json_str()) or {
 					panic('Failed Components decoding: $err')
 				}
 			}
 			'headers' {
-				components.headers = decode_map_sumtype<Header>(v.json_str()) or {
+				components.headers = decode_map_sumtype<Header>(value.json_str()) or {
 					panic('Failed Components decoding: $err')
 				}
 			}
 			'links' {
-				components.links = decode_map_sumtype<Link>(v.json_str()) or {
+				components.links = decode_map_sumtype<Link>(value.json_str()) or {
 					panic('Failed Components decoding: $err')
 				}
 			}
 			'callbacks' {
-				components.callbacks = decode_map_sumtype<Callback>(v.json_str()) or {
+				components.callbacks = decode_map_sumtype<Callback>(value.json_str()) or {
 					panic('Failed Components decoding: $err')
 				}
 			}

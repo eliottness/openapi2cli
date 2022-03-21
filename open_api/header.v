@@ -1,6 +1,6 @@
 module open_api
 
-import x.json2 { Any, decode, raw_decode }
+import x.json2 { Any }
 
 struct Header {
 mut:
@@ -10,5 +10,5 @@ mut:
 	deprecated        bool
 }
 
-pub fn (mut header Header) from_json(f Any) {
+pub fn (mut header Header) from_json(json Any) {
 }

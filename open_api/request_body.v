@@ -1,6 +1,6 @@
 module open_api
 
-import x.json2 { Any, decode, raw_decode }
+import x.json2 { Any }
 
 struct RequestBody {
 mut:
@@ -9,7 +9,7 @@ mut:
 	required    bool
 }
 
-pub fn (mut request_body RequestBody) from_json(f Any) {
+pub fn (mut request_body RequestBody) from_json(json Any) {
 }
 
 // ---------------------------------------- //
@@ -22,5 +22,5 @@ mut:
 	encoding map[string]Encoding
 }
 
-pub fn (mut media_type MediaType) from_json(f Any) {
+pub fn (mut media_type MediaType) from_json(json Any) {
 }

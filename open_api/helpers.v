@@ -1,33 +1,34 @@
 module open_api
 
 import x.json2 { Any, decode, raw_decode }
+import json
 
 pub fn decode_array<T>(src string) ?[]T {
-	res := raw_decode(src) ?
+	json := raw_decode(src) ?
 	mut typ := []T{}
 
-	for k in res.arr() {
-		typ << decode<T>(k.json_str()) or { panic('Failed $T.name decoding: $err') }
+	for value in json.arr() {
+		typ << decode<T>(value.json_str()) or { panic('Failed $T.name decoding: $err') }
 	}
 	return typ
 }
 
 pub fn decode_map<T>(src string) ?map[string]T {
-	res := raw_decode(src) ?
+	json := raw_decode(src) ?
 	mut typ := map[string]T{}
 
-	for k, v in res.as_map() {
-		typ[k] = decode<T>(v.json_str()) or { panic('Failed $T.name decoding: $err') }
+	for key, value in json.as_map() {
+		typ[key] = decode<T>(value.json_str()) or { panic('Failed $T.name decoding: $err') }
 	}
 	return typ
 }
 
 pub fn decode_map_sumtype<T>(src string) ?map[string]ObjectRef<T> {
-	res := raw_decode(src) ?
+	json := raw_decode(src) ?
 	mut typ := map[string]ObjectRef<T>{}
 
-	for k, v in res.as_map() {
-		typ[k] = from_json<T>(v.json_str())
+	for key, value in json.as_map() {
+		typ[key] = from_json<T>(value.json_str())
 	}
 	return typ
 }

@@ -1,6 +1,6 @@
 module open_api
 
-import x.json2 { Any, decode, raw_decode }
+import x.json2 { Any }
 
 struct Link {
 mut:
@@ -12,5 +12,5 @@ mut:
 	server        Server
 }
 
-pub fn (mut link Link) from_json(f Any) {
+pub fn (mut link Link) from_json(json Any) {
 }

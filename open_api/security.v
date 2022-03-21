@@ -1,13 +1,13 @@
 module open_api
 
-import x.json2 { Any, decode, raw_decode }
+import x.json2 { Any }
 
 struct SecurityRequirement {
 mut:
 	requirements map[string][]string // Todo: make it match the '{name}' type
 }
 
-pub fn (mut requirement SecurityRequirement) from_json(f Any) {
+pub fn (mut requirement SecurityRequirement) from_json(json Any) {
 }
 
 // ---------------------------------------- //
@@ -24,7 +24,7 @@ mut:
 	description         string
 }
 
-pub fn (mut security_scheme SecurityScheme) from_json(f Any) {
+pub fn (mut security_scheme SecurityScheme) from_json(json Any) {
 }
 
 // ---------------------------------------- //
@@ -37,7 +37,7 @@ mut:
 	password           OAuthFlow
 }
 
-pub fn (mut flows OAuthFlows) from_json(f Any) {
+pub fn (mut flows OAuthFlows) from_json(json Any) {
 }
 
 // ---------------------------------------- //
@@ -50,5 +50,5 @@ mut:
 	refresh_url       string            [json: 'refreshUrl']
 }
 
-pub fn (mut flow OAuthFlow) from_json(f Any) {
+pub fn (mut flow OAuthFlow) from_json(json Any) {
 }

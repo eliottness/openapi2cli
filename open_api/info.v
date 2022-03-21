@@ -1,6 +1,7 @@
 module open_api
 
 import x.json2 { Any, decode }
+import json
 
 struct Info {
 mut:
@@ -12,32 +13,32 @@ mut:
 	license          License
 }
 
-pub fn (mut info Info) from_json(f Any) {
-	obj := f.as_map()
+pub fn (mut info Info) from_json(json Any) {
+	object := json.as_map()
 
-	check_required<Info>(obj, 'title', 'version')
+	check_required<Info>(object, 'title', 'version')
 
-	for k, v in obj {
-		match k {
+	for key, value in object {
+		match key {
 			'title' {
-				info.title = v.str()
+				info.title = value.str()
 			}
 			'version' {
-				info.version = v.str()
+				info.version = value.str()
 			}
 			'termsOfService' {
-				info.terms_of_service = v.str()
+				info.terms_of_service = value.str()
 			}
 			'description' {
-				info.description = v.str()
+				info.description = value.str()
 			}
 			'contact' {
-				info.contact = decode<Contact>(v.json_str()) or {
+				info.contact = decode<Contact>(value.json_str()) or {
 					panic('Failed Info decoding: $err')
 				}
 			}
 			'license' {
-				info.license = decode<License>(v.json_str()) or {
+				info.license = decode<License>(value.json_str()) or {
 					panic('Failed Info decoding: $err')
 				}
 			}
@@ -55,13 +56,13 @@ mut:
 	email string
 }
 
-pub fn (mut contact Contact) from_json(f Any) {
-	obj := f.as_map()
-	for k, v in obj {
-		match k {
-			'name' { contact.name = v.str() }
-			'url' { contact.url = v.str() }
-			'email' { contact.email = v.str() }
+pub fn (mut contact Contact) from_json(json Any) {
+	object := json.as_map()
+	for key, value in object {
+		match key {
+			'name' { contact.name = value.str() }
+			'url' { contact.url = value.str() }
+			'email' { contact.email = value.str() }
 			else {}
 		}
 	}
@@ -75,17 +76,17 @@ mut:
 	url  string
 }
 
-pub fn (mut license License) from_json(f Any) {
-	obj := f.as_map()
+pub fn (mut license License) from_json(json Any) {
+	object := json.as_map()
 
-	if 'name' !in obj {
+	if 'name' !in object {
 		panic('Failed Info decoding: "name" not specified !')
 	}
 
-	for k, v in obj {
-		match k {
-			'name' { license.name = v.str() }
-			'url' { license.url = v.str() }
+	for key, value in object {
+		match key {
+			'name' { license.name = value.str() }
+			'url' { license.url = value.str() }
 			else {}
 		}
 	}

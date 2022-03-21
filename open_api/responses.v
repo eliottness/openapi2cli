@@ -1,6 +1,6 @@
 module open_api
 
-import x.json2 { Any, decode, raw_decode }
+import x.json2 { Any }
 
 struct Responses {
 mut:
@@ -8,7 +8,7 @@ mut:
 	http_status_code Response | Reference // Todo: find a way to do integer matching
 }
 
-pub fn (mut responses Responses) from_json(f Any) {
+pub fn (mut responses Responses) from_json(json Any) {
 }
 
 // ---------------------------------------- //
@@ -21,5 +21,5 @@ mut:
 	links       map[string]Link | Reference
 }
 
-pub fn (mut response Response) from_json(f Any) {
+pub fn (mut response Response) from_json(json Any) {
 }
