@@ -9,7 +9,9 @@ fn test_basic_info_struct() ? {
 }
 
 fn test_info_struct_without_required() ? {
-	// Todo: We need to wait the implementation of the recover keyword
+	content := '{ "title": "random" }'
+	info := open_api.decode<open_api.Info>(content) or { return }
+	assert false
 }
 
 fn test_full_info_struct() ? {
