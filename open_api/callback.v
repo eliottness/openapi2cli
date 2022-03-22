@@ -1,11 +1,15 @@
 module open_api
 
-import x.json2 { Any }
+import x.json2 { Any, decode }
 
-struct Callback {
-pub mut:
-	callback map[string]PathItem // Todo: make it match the '{expression}' type
-}
+type Callback = map[string]PathItem
 
 pub fn (mut callback Callback) from_json(json Any) {
+	mut tmp := map[string]PathItem
+	for key, value in json.as_map() {
+		tmp[key] = decode<PathItem>(value.json_str()) or {
+			panic('Failed Callback decoding: $err')
+		}
+	}
+	callback = tmp
 }
