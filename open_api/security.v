@@ -48,9 +48,7 @@ pub fn (mut security_scheme SecurityScheme) from_json(json Any) ? {
 				security_scheme.scheme = value.str()
 			}
 			'security_scheme' {
-				security_scheme.flows = decode<OAuthFlows>(value.json_str()) or {
-					return error('Failed SecurityScheme decoding: $err')
-				}
+				security_scheme.flows = decode<OAuthFlows>(value.json_str()) ?
 			}
 			'bearerFormat' {
 				security_scheme.bearer_format = value.str()
@@ -77,24 +75,16 @@ pub fn (mut flows OAuthFlows) from_json(json Any) ? {
 	for key, value in json.as_map() {
 		match key {
 			'clientCredentials' {
-				flows.client_credentials = decode<OAuthFlow>(value.json_str()) or {
-					return error('Failed OAuthFlows decoding: $err')
-				}
+				flows.client_credentials = decode<OAuthFlow>(value.json_str()) ?
 			}
 			'authorizationCode' {
-				flows.authorization_code = decode<OAuthFlow>(value.json_str()) or {
-					return error('Failed OAuthFlows decoding: $err')
-				}
+				flows.authorization_code = decode<OAuthFlow>(value.json_str()) ?
 			}
 			'implicit' {
-				flows.implicit = decode<OAuthFlow>(value.json_str()) or {
-					return error('Failed OAuthFlows decoding: $err')
-				}
+				flows.implicit = decode<OAuthFlow>(value.json_str()) ?
 			}
 			'password' {
-				flows.password = decode<OAuthFlow>(value.json_str()) or {
-					return error('Failed OAuthFlows decoding: $err')
-				}
+				flows.password = decode<OAuthFlow>(value.json_str()) ?
 			}
 			else {}
 		}
@@ -124,9 +114,7 @@ pub fn (mut flow OAuthFlow) from_json(json Any) ? {
 				flow.token_url = value.str()
 			}
 			'scopes' {
-				flow.scopes = decode_map_string(value.json_str()) or {
-					return error('Failed OAuthFlow decoding: $err')
-				}
+				flow.scopes = decode_map_string(value.json_str()) ?
 			}
 			'refreshUrl' {
 				flow.refresh_url = value.str()

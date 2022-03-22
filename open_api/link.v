@@ -26,17 +26,13 @@ pub fn (mut link Link) from_json(json Any) ? {
 				link.request_body = value
 			}
 			'parameters' {
-				link.parameters = decode_map_any(value.json_str()) or {
-					return error('Failed Link decoding: $err')
-				}
+				link.parameters = decode_map_any(value.json_str()) ?
 			}
 			'description' {
 				link.description = value.str()
 			}
 			'server' {
-				link.server = decode<Server>(value.json_str()) or {
-					return error('Failed Link decoding: $err')
-				}
+				link.server = decode<Server>(value.json_str()) ?
 			}
 			else {}
 		}

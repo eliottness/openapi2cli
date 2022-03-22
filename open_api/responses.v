@@ -41,19 +41,13 @@ pub fn (mut response Response) from_json(json Any) ? {
 				response.description = value.str()
 			}
 			'headers' {
-				response.headers = decode_map_sumtype<Header>(value.json_str(), fake_predicat) or {
-					return error('Failed Response decoding: $err')
-				}
+				response.headers = decode_map_sumtype<Header>(value.json_str(), fake_predicat) ?
 			}
 			'content' {
-				response.content = decode_map<MediaType>(value.json_str()) or {
-					return error('Failed Response decoding: $err')
-				}
+				response.content = decode_map<MediaType>(value.json_str()) ?
 			}
 			'links' {
-				response.links = decode_map_sumtype<Link>(value.json_str(), fake_predicat) or {
-					return error('Failed Response decoding: $err')
-				}
+				response.links = decode_map_sumtype<Link>(value.json_str(), fake_predicat) ?
 			}
 			else {}
 		}

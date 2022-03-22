@@ -23,9 +23,7 @@ pub fn (mut server Server) from_json(json Any) ? {
 				server.description = value.str()
 			}
 			'variables' {
-				server.variables = decode_map<ServerVariable>(value.json_str()) or {
-					return error('Failed Server decoding: $err')
-				}
+				server.variables = decode_map<ServerVariable>(value.json_str()) ?
 			}
 			else {}
 		}

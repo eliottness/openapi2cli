@@ -45,54 +45,34 @@ pub fn (mut path_item PathItem) from_json(json Any) ? {
 				path_item.description = value.str()
 			}
 			'get' {
-				path_item.get = decode<Operation>(value.json_str()) or {
-					return error('Failed PathItem decoding: $err')
-				}
+				path_item.get = decode<Operation>(value.json_str()) ?
 			}
 			'put' {
-				path_item.put = decode<Operation>(value.json_str()) or {
-					return error('Failed PathItem decoding: $err')
-				}
+				path_item.put = decode<Operation>(value.json_str()) ?
 			}
 			'post' {
-				path_item.post = decode<Operation>(value.json_str()) or {
-					return error('Failed PathItem decoding: $err')
-				}
+				path_item.post = decode<Operation>(value.json_str()) ?
 			}
 			'delete' {
-				path_item.delete = decode<Operation>(value.json_str()) or {
-					return error('Failed PathItem decoding: $err')
-				}
+				path_item.delete = decode<Operation>(value.json_str()) ?
 			}
 			'options' {
-				path_item.options = decode<Operation>(value.json_str()) or {
-					return error('Failed PathItem decoding: $err')
-				}
+				path_item.options = decode<Operation>(value.json_str()) ?
 			}
 			'head' {
-				path_item.head = decode<Operation>(value.json_str()) or {
-					return error('Failed PathItem decoding: $err')
-				}
+				path_item.head = decode<Operation>(value.json_str()) ?
 			}
 			'patch' {
-				path_item.patch = decode<Operation>(value.json_str()) or {
-					return error('Failed PathItem decoding: $err')
-				}
+				path_item.patch = decode<Operation>(value.json_str()) ?
 			}
 			'trace' {
-				path_item.trace = decode<Operation>(value.json_str()) or {
-					return error('Failed PathItem decoding: $err')
-				}
+				path_item.trace = decode<Operation>(value.json_str()) ?
 			}
 			'servers' {
-				path_item.servers = decode_array<Server>(value.json_str()) or {
-					return error('Failed PathItem decoding: $err')
-				}
+				path_item.servers = decode_array<Server>(value.json_str()) ?
 			}
 			'parameters' {
-				path_item.parameters = decode<[]ObjectRef<Parameter>>(value.json_str()) or {
-					return error('Failed PathItem decoding: $err')
-				}
+				path_item.parameters = decode<[]ObjectRef<Parameter>>(value.json_str()) ?
 			}
 			else {}
 		}
@@ -114,8 +94,6 @@ pub fn (mut paths map[string]PathItem) from_json(json Any) ? {
 			}
 		}
 
-		paths[key] = decode<PathItem>(value.json_str()) or {
-			return error('Failed map[string]PathItem decoding: $err')
-		}
+		paths[key] = decode<PathItem>(value.json_str()) ?
 	}
 }

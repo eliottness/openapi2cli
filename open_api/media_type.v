@@ -21,14 +21,10 @@ pub fn (mut media_type MediaType) from_json(json Any) ? {
 				media_type.example = value
 			}
 			'examples' {
-				media_type.examples = decode_map_sumtype<Example>(value.json_str(), fake_predicat) or {
-					return error('Failed MediaType decoding: $err')
-				}
+				media_type.examples = decode_map_sumtype<Example>(value.json_str(), fake_predicat) ?
 			}
 			'encoding' {
-				media_type.encoding = decode_map<Encoding>(value.json_str()) or {
-					return error('Failed MediaType decoding: $err')
-				}
+				media_type.encoding = decode_map<Encoding>(value.json_str()) ?
 			}
 			else {}
 		}
@@ -56,9 +52,7 @@ pub fn (mut encoding Encoding) from_json(json Any) ? {
 				encoding.allow_reserved = value.bool()
 			}
 			'headers' {
-				encoding.headers = decode_map_sumtype<Header>(value.json_str(), fake_predicat) or {
-					return error('Failed "Encoding" decoding: $err')
-				}
+				encoding.headers = decode_map_sumtype<Header>(value.json_str(), fake_predicat) ?
 			}
 			'style' {
 				encoding.style = value.str()

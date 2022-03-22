@@ -20,9 +20,7 @@ pub fn (mut tag Tag) from_json(json Any) ? {
 				tag.name = value.str()
 			}
 			'externalDocs' {
-				tag.external_docs = decode<ExternalDocumentation>(value.json_str()) or {
-					return error('Failed Tag decoding: $err')
-				}
+				tag.external_docs = decode<ExternalDocumentation>(value.json_str()) ?
 			}
 			'description' {
 				tag.description = value.str()

@@ -17,7 +17,7 @@ pub fn decode_array<T>(src string) ?[]T {
 	mut typ := []T{}
 
 	for value in json.arr() {
-		typ << decode<T>(value.json_str()) or { return error('Failed $T.name decoding: $err') }
+		typ << decode<T>(value.json_str()) ?
 	}
 	return typ
 }
@@ -39,7 +39,7 @@ pub fn decode_map<T>(src string) ?map[string]T {
 	mut typ := map[string]T{}
 
 	for key, value in json.as_map() {
-		typ[key] = decode<T>(value.json_str()) or { return error('Failed $T.name decoding: $err') }
+		typ[key] = decode<T>(value.json_str()) ?
 	}
 	return typ
 }

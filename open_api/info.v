@@ -32,14 +32,10 @@ pub fn (mut info Info) from_json(json Any) ? {
 				info.description = value.str()
 			}
 			'contact' {
-				info.contact = decode<Contact>(value.json_str()) or {
-					return error('Failed Info decoding: $err')
-				}
+				info.contact = decode<Contact>(value.json_str()) ?
 			}
 			'license' {
-				info.license = decode<License>(value.json_str()) or {
-					return error('Failed Info decoding: $err')
-				}
+				info.license = decode<License>(value.json_str()) ?
 			}
 			else {}
 		}

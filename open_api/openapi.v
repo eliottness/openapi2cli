@@ -25,39 +25,25 @@ pub fn (mut open_api OpenApi) from_json(json Any) ? {
 				open_api.openapi = value.str()
 			}
 			'info' {
-				open_api.info = decode<Info>(value.json_str()) or {
-					return error('Failed OpenApi decoding: $err')
-				}
+				open_api.info = decode<Info>(value.json_str()) ?
 			}
 			'paths' {
-				open_api.paths = decode<map[string]PathItem>(value.json_str()) or {
-					return error('Failed OpenApi decoding: $err')
-				}
+				open_api.paths = decode<map[string]PathItem>(value.json_str()) ?
 			}
 			'externalDocs' {
-				open_api.external_docs = decode<ExternalDocumentation>(value.json_str()) or {
-					return error('Failed OpenApi decoding: $err')
-				}
+				open_api.external_docs = decode<ExternalDocumentation>(value.json_str()) ?
 			}
 			'servers' {
-				open_api.servers = decode_array<Server>(value.json_str()) or {
-					return error('Failed OpenApi decoding: $err')
-				}
+				open_api.servers = decode_array<Server>(value.json_str()) ?
 			}
 			'components' {
-				open_api.components = decode<Components>(value.json_str()) or {
-					return error('Failed OpenApi decoding: $err')
-				}
+				open_api.components = decode<Components>(value.json_str()) ?
 			}
 			'security' {
-				open_api.security = decode_array<SecurityRequirement>(value.json_str()) or {
-					return error('Failed OpenApi decoding: $err')
-				}
+				open_api.security = decode_array<SecurityRequirement>(value.json_str()) ?
 			}
 			'tags' {
-				open_api.tags = decode_array<Tag>(value.json_str()) or {
-					return error('Failed OpenApi decoding: $err')
-				}
+				open_api.tags = decode_array<Tag>(value.json_str()) ?
 			}
 			else {}
 		}

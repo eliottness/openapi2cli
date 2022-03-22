@@ -20,9 +20,7 @@ pub fn (mut request_body RequestBody) from_json(json Any) ? {
 				request_body.description = value.str()
 			}
 			'content' {
-				request_body.content = decode_map<MediaType>(value.json_str()) or {
-					return error('Failed RequestBody decoding: $err')
-				}
+				request_body.content = decode_map<MediaType>(value.json_str()) ?
 			}
 			'required' {
 				request_body.required = value.bool()
