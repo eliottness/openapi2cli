@@ -16,17 +16,51 @@ pub fn (mut requirement SecurityRequirement) from_json(json Any) {
 
 struct SecurityScheme {
 pub mut:
-	security_type       string     [json: 'type'; required]
-	location            string     [json: 'in'; required]
-	open_id_connect_url string     [json: 'openIdConnectUrl'; required]
-	name                string     [required]
-	scheme              string     [required]
-	flows               OAuthFlows [required]
-	bearer_format       string     [json: 'bearerFormat']
+	security_type       string
+	location            string
+	open_id_connect_url string
+	name                string
+	scheme              string
+	flows               OAuthFlows
+	bearer_format       string
 	description         string
 }
 
 pub fn (mut security_scheme SecurityScheme) from_json(json Any) {
+	object := json.as_map()
+	check_required<SecurityScheme>(object, 'type', 'in', 'openIdConnectUrl', 'name', 'scheme', 'flows')
+
+	for key, value in json.as_map() {
+		match key {
+			'type' {
+				security_scheme.security_type = value.str()
+			}
+			'in' {
+				security_scheme.location = value.str()
+			}
+			'openIdConnectUrl' {
+				security_scheme.open_id_connect_url = value.str()
+			}
+			'name' {
+				security_scheme.name = value.str()
+			}
+			'scheme' {
+				security_scheme.scheme = value.str()
+			}
+			'security_scheme' {
+				security_scheme.flows = decode<OAuthFlows>(value.json_str()) or {
+					panic('Failed SecurityScheme decoding: $err')
+				}
+			}
+			'bearerFormat' {
+				security_scheme.bearer_format = value.str()
+			}
+			'description' {
+				security_scheme.description = value.str()
+			}
+			else {}
+		}
+	}
 }
 
 // ---------------------------------------- //
