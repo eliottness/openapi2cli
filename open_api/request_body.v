@@ -55,7 +55,7 @@ pub fn (mut media_type MediaType) from_json(json Any) {
 				media_type.example = value
 			}
 			'examples' {
-				media_type.examples = decode_map_sumtype<Example>(value.json_str()) or {
+				media_type.examples = decode_map_sumtype<Example>(value.json_str(), fake_predicat) or {
 					panic('Failed MediaType decoding: $err')
 				}
 			}

@@ -22,7 +22,7 @@ pub fn (mut encoding Encoding) from_json(json Any) {
 				encoding.allow_reserved = value.bool()
 			}
 			'headers' {
-				encoding.headers = decode_map_sumtype<Header>(value.json_str()) or {
+				encoding.headers = decode_map_sumtype<Header>(value.json_str(), fake_predicat) or {
 					panic('Failed "Encoding" decoding: $err')
 				}
 			}

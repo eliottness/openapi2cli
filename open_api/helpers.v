@@ -53,7 +53,11 @@ pub fn decode_map_any(src string) ?map[string]Any {
 	return typ
 }
 
-pub fn decode_map_sumtype<T>(src string) ?map[string]ObjectRef<T> {
+fn fake_predicat(str string) bool {
+	return true
+}
+
+pub fn decode_map_sumtype<T>(src string, verif fn (string) bool) ?map[string]ObjectRef<T> {
 	json := raw_decode(src) ?
 	mut typ := map[string]ObjectRef<T>{}
 

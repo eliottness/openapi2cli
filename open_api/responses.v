@@ -41,7 +41,7 @@ pub fn (mut response Response) from_json(json Any) {
 				response.description = value.str()
 			}
 			'headers' {
-				response.headers = decode_map_sumtype<Header>(value.json_str()) or {
+				response.headers = decode_map_sumtype<Header>(value.json_str(), fake_predicat) or {
 					panic('Failed Response decoding: $err')
 				}
 			}
@@ -51,7 +51,7 @@ pub fn (mut response Response) from_json(json Any) {
 				}
 			}
 			'links' {
-				response.links = decode_map_sumtype<Link>(value.json_str()) or {
+				response.links = decode_map_sumtype<Link>(value.json_str(), fake_predicat) or {
 					panic('Failed Response decoding: $err')
 				}
 			}

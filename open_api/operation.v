@@ -58,7 +58,7 @@ pub fn (mut operation Operation) from_json(json Any) {
 				}
 			}
 			'callbacks' {
-				operation.callbacks = decode_map_sumtype<Callback>(value.json_str()) or {
+				operation.callbacks = decode_map_sumtype<Callback>(value.json_str(), fake_predicat) or {
 					panic('Failed Operation decoding: $err')
 				}
 			}
