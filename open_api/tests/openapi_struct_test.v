@@ -1,11 +1,10 @@
-module open_api
-
+import open_api
 import x.json2
 import os
 
 fn test_basic_open_api_struct() ? {
-	content := os.read_file('./open_api/testdata/open_api_basic.json') ?
-	open_api_obj := json2.decode<OpenApi>(content) ?
+	content := os.read_file(@VMODROOT + '/open_api/testdata/open_api_basic.json') ?
+	open_api_obj := json2.decode<open_api.OpenApi>(content) ?
 	assert open_api_obj.openapi == '3'
 	assert open_api_obj.info.title == 'Sample Pet Store App'
 	assert open_api_obj.info.version == '1.0.1'
