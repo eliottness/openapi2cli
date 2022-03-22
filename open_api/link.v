@@ -1,6 +1,6 @@
 module open_api
 
-import x.json2 { Any, decode }
+import x.json2 { Any }
 import json
 
 struct Link {
@@ -13,7 +13,7 @@ pub mut:
 	server        Server
 }
 
-pub fn (mut link Link) from_json(json Any) {
+pub fn (mut link Link) from_json(json Any) ? {
 	for key, value in json.as_map() {
 		match key {
 			'operationRef' {
@@ -27,7 +27,7 @@ pub fn (mut link Link) from_json(json Any) {
 			}
 			'parameters' {
 				link.parameters = decode_map_any(value.json_str()) or {
-					panic('Failed Link decoding: $err')
+					return error('Failed Link decoding: $err')
 				}
 			}
 			'description' {
@@ -35,7 +35,7 @@ pub fn (mut link Link) from_json(json Any) {
 			}
 			'server' {
 				link.server = decode<Server>(value.json_str()) or {
-					panic('Failed Link decoding: $err')
+					return error('Failed Link decoding: $err')
 				}
 			}
 			else {}

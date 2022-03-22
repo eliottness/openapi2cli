@@ -12,7 +12,7 @@ pub mut:
 	explode        bool
 }
 
-pub fn (mut encoding Encoding) from_json(json Any) {
+pub fn (mut encoding Encoding) from_json(json Any) ? {
 	for key, value in json.as_map() {
 		match key {
 			'contentType' {
@@ -22,8 +22,8 @@ pub fn (mut encoding Encoding) from_json(json Any) {
 				encoding.allow_reserved = value.bool()
 			}
 			'headers' {
-				encoding.headers = decode_map_sumtype<Header>(value.json_str()) or {
-					panic('Failed "Encoding" decoding: $err')
+				encoding.headers = decode_map_sumtype<Header>(value.json_str(), fake_predicat) or {
+					return error('Failed "Encoding" decoding: $err')
 				}
 			}
 			'style' {

@@ -1,6 +1,6 @@
 module open_api
 
-import x.json2 { Any, decode }
+import x.json2 { Any }
 import json
 
 struct Tag {
@@ -10,9 +10,9 @@ pub mut:
 	description   string
 }
 
-pub fn (mut tag Tag) from_json(json Any) {
+pub fn (mut tag Tag) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<Tag>(object, 'name')
+	check_required<Tag>(object, 'name') ?
 
 	for key, value in object {
 		match key {
@@ -21,7 +21,7 @@ pub fn (mut tag Tag) from_json(json Any) {
 			}
 			'externalDocs' {
 				tag.external_docs = decode<ExternalDocumentation>(value.json_str()) or {
-					panic('Failed Tag decoding: $err')
+					return error('Failed Tag decoding: $err')
 				}
 			}
 			'description' {

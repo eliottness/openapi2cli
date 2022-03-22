@@ -1,21 +1,22 @@
 import open_api
-import x.json2
 import os
 
 fn test_basic_info_struct() ? {
 	content := '{ "title": "random", "version": "1.0.1" }'
-	info := json2.decode<open_api.Info>(content) ?
+	info := open_api.decode<open_api.Info>(content) ?
 	assert info.title == 'random'
 	assert info.version == '1.0.1'
 }
 
 fn test_info_struct_without_required() ? {
-	// Todo: We need to wait the implementation of the recover keyword
+	content := '{ "title": "random" }'
+	info := open_api.decode<open_api.Info>(content) or { return }
+	assert false
 }
 
 fn test_full_info_struct() ? {
 	content := os.read_file(@VMODROOT + '/open_api/testdata/info.json') ?
-	info := json2.decode<open_api.Info>(content) ?
+	info := open_api.decode<open_api.Info>(content) ?
 	assert info.title == 'Sample Pet Store App'
 	assert info.version == '1.0.1'
 	assert info.description == 'This is a sample server for a pet store.'

@@ -1,10 +1,9 @@
 import open_api
-import x.json2
 import os
 
 fn test_basic_open_api_struct() ? {
 	content := os.read_file(@VMODROOT + '/open_api/testdata/open_api_basic.json') ?
-	open_api := json2.decode<open_api.OpenApi>(content) ?
+	open_api := open_api.decode<open_api.OpenApi>(content) ?
 	assert open_api.openapi == '3'
 	assert open_api.info.title == 'Sample Pet Store App'
 	assert open_api.info.version == '1.0.1'
@@ -23,8 +22,22 @@ fn test_basic_open_api_struct() ? {
 	assert open_api.servers[0].variables['var1'].default_value == 'default'
 }
 
-fn test_open_api_struct_without_required() ? {
-	// Todo: We need to wait the implementation of the recover keyword
+fn test_open_api_struct_without_paths() ? {
+	content := '{ "openapi": "3", "info": {"title": "oui", "version": "1"} }'
+	info := open_api.decode<open_api.OpenApi>(content) or { return }
+	assert false
+}
+
+fn test_open_api_struct_without_info() ? {
+	content := '{ "openapi": "3", "paths": {} }'
+	info := open_api.decode<open_api.OpenApi>(content) or { return }
+	assert false
+}
+
+fn test_open_api_struct_without_openapi() ? {
+	content := '{ "info": {"title": "oui", "version": "1"}, "paths": {} }'
+	info := open_api.decode<open_api.OpenApi>(content) or { return }
+	assert false
 }
 
 fn test_full_open_api_struct() ? {
