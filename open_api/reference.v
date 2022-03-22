@@ -5,10 +5,21 @@ import json
 
 struct Reference {
 pub mut:
-	ref string [json: '\$ref'; required]
+	ref string
 }
 
 pub fn (mut reference Reference) from_json(json Any) {
+	object := json.as_map()
+	check_required<Reference>(object, '\$ref')
+
+	for key, value in object {
+		match key {
+			'\$ref' {
+				reference.ref = value.str()
+			}
+			else {}
+		}
+	}
 }
 
 // ---------------------------------------- //

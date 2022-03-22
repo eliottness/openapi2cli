@@ -13,12 +13,42 @@ pub fn decode_array<T>(src string) ?[]T {
 	return typ
 }
 
+pub fn decode_array_string(src string) ?[]string {
+	json := raw_decode(src) ?
+	mut typ := []string{}
+
+	for value in json.arr() {
+		typ << value.str()
+	}
+	return typ
+}
+
 pub fn decode_map<T>(src string) ?map[string]T {
 	json := raw_decode(src) ?
 	mut typ := map[string]T{}
 
 	for key, value in json.as_map() {
 		typ[key] = decode<T>(value.json_str()) or { panic('Failed $T.name decoding: $err') }
+	}
+	return typ
+}
+
+pub fn decode_map_string(src string) ?map[string]string {
+	json := raw_decode(src) ?
+	mut typ := map[string]string{}
+
+	for key, value in json.as_map() {
+		typ[key] = value.str()
+	}
+	return typ
+}
+
+pub fn decode_map_any(src string) ?map[string]Any {
+	json := raw_decode(src) ?
+	mut typ := map[string]Any{}
+
+	for key, value in json.as_map() {
+		typ[key] = value
 	}
 	return typ
 }
