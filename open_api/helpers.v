@@ -58,7 +58,7 @@ pub fn decode_map_sumtype<T>(src string) ?map[string]ObjectRef<T> {
 	mut typ := map[string]ObjectRef<T>{}
 
 	for key, value in json.as_map() {
-		typ[key] = from_json<T>(value.json_str())
+		typ[key] = from_json<T>(value)
 	}
 	return typ
 }

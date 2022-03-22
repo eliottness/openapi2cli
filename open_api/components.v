@@ -17,10 +17,7 @@ pub mut:
 }
 
 pub fn (mut components Components) from_json(json Any) {
-	object := json.as_map()
-	check_required<OpenApi>(object, 'openapi', 'info', 'paths')
-
-	for key, value in object {
+	for key, value in json.as_map() {
 		match key {
 			'SecuritySchemes' {
 				components.security_schemes = decode_map_sumtype<SecurityScheme>(value.json_str()) or {
