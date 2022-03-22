@@ -11,9 +11,9 @@ pub mut:
 	deprecated        bool
 }
 
-pub fn (mut header Header) from_json(json Any) {
+pub fn (mut header Header) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<Header>(object, 'required')
+	check_required<Header>(object, 'required') ?
 
 	for key, value in object {
 		match key {

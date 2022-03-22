@@ -1,10 +1,9 @@
 import open_api
-import x.json2
 import os
 
 fn test_callback_struct() ? {
 	content := os.read_file(@VMODROOT + '/open_api/testdata/callback.json') ?
-	components := json2.decode<open_api.Components>(content) ?
+	components := open_api.decode<open_api.Components>(content) ?
 	callback := components.callbacks['test1'] as open_api.Callback
 
 	assert callback.len == 2

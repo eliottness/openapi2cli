@@ -9,11 +9,11 @@ pub mut:
 	http_status_code ObjectRef<Response> // Todo: find a way to do integer matching
 }
 
-pub fn (mut responses Responses) from_json(json Any) {
+pub fn (mut responses Responses) from_json(json Any) ? {
 	for key, value in json.as_map() {
 		match key {
 			'default' {
-				responses.default_response = from_json<Response>(value.json_str())
+				responses.default_response = from_json<Response>(value.json_str()) ?
 			}
 			// Todo finish status code
 			else {}
@@ -31,9 +31,9 @@ pub mut:
 	links       map[string]ObjectRef<Link>
 }
 
-pub fn (mut response Response) from_json(json Any) {
+pub fn (mut response Response) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<Response>(object, 'description')
+	check_required<Response>(object, 'description') ?
 
 	for key, value in object {
 		match key {
@@ -42,17 +42,17 @@ pub fn (mut response Response) from_json(json Any) {
 			}
 			'headers' {
 				response.headers = decode_map_sumtype<Header>(value.json_str(), fake_predicat) or {
-					panic('Failed Response decoding: $err')
+					return error('Failed Response decoding: $err')
 				}
 			}
 			'content' {
 				response.content = decode_map<MediaType>(value.json_str()) or {
-					panic('Failed Response decoding: $err')
+					return error('Failed Response decoding: $err')
 				}
 			}
 			'links' {
 				response.links = decode_map_sumtype<Link>(value.json_str(), fake_predicat) or {
-					panic('Failed Response decoding: $err')
+					return error('Failed Response decoding: $err')
 				}
 			}
 			else {}

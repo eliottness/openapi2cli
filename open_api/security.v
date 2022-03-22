@@ -1,6 +1,6 @@
 module open_api
 
-import x.json2 { Any, decode }
+import x.json2 { Any }
 import json
 
 struct SecurityRequirement {
@@ -8,7 +8,7 @@ pub mut:
 	requirements map[string][]string // Todo: make it match the '{name}' type
 }
 
-pub fn (mut requirement SecurityRequirement) from_json(json Any) {
+pub fn (mut requirement SecurityRequirement) from_json(json Any) ? {
 	// Todo
 }
 
@@ -26,10 +26,9 @@ pub mut:
 	description         string
 }
 
-pub fn (mut security_scheme SecurityScheme) from_json(json Any) {
+pub fn (mut security_scheme SecurityScheme) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<SecurityScheme>(object, 'type', 'in', 'openIdConnectUrl', 'name', 'scheme',
-		'flows')
+	check_required<SecurityScheme>(object, 'type') ?
 
 	for key, value in json.as_map() {
 		match key {
@@ -50,7 +49,7 @@ pub fn (mut security_scheme SecurityScheme) from_json(json Any) {
 			}
 			'security_scheme' {
 				security_scheme.flows = decode<OAuthFlows>(value.json_str()) or {
-					panic('Failed SecurityScheme decoding: $err')
+					return error('Failed SecurityScheme decoding: $err')
 				}
 			}
 			'bearerFormat' {
@@ -74,27 +73,27 @@ pub mut:
 	password           OAuthFlow
 }
 
-pub fn (mut flows OAuthFlows) from_json(json Any) {
+pub fn (mut flows OAuthFlows) from_json(json Any) ? {
 	for key, value in json.as_map() {
 		match key {
 			'clientCredentials' {
 				flows.client_credentials = decode<OAuthFlow>(value.json_str()) or {
-					panic('Failed OAuthFlows decoding: $err')
+					return error('Failed OAuthFlows decoding: $err')
 				}
 			}
 			'authorizationCode' {
 				flows.authorization_code = decode<OAuthFlow>(value.json_str()) or {
-					panic('Failed OAuthFlows decoding: $err')
+					return error('Failed OAuthFlows decoding: $err')
 				}
 			}
 			'implicit' {
 				flows.implicit = decode<OAuthFlow>(value.json_str()) or {
-					panic('Failed OAuthFlows decoding: $err')
+					return error('Failed OAuthFlows decoding: $err')
 				}
 			}
 			'password' {
 				flows.password = decode<OAuthFlow>(value.json_str()) or {
-					panic('Failed OAuthFlows decoding: $err')
+					return error('Failed OAuthFlows decoding: $err')
 				}
 			}
 			else {}
@@ -112,9 +111,9 @@ pub mut:
 	refresh_url       string
 }
 
-pub fn (mut flow OAuthFlow) from_json(json Any) {
+pub fn (mut flow OAuthFlow) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<OAuthFlow>(object, 'authorizationUrl', 'tokenUrl', 'scopes')
+	check_required<OAuthFlow>(object, 'authorizationUrl', 'tokenUrl', 'scopes') ?
 
 	for key, value in object {
 		match key {
@@ -126,7 +125,7 @@ pub fn (mut flow OAuthFlow) from_json(json Any) {
 			}
 			'scopes' {
 				flow.scopes = decode_map_string(value.json_str()) or {
-					panic('Failed OAuthFlow decoding: $err')
+					return error('Failed OAuthFlow decoding: $err')
 				}
 			}
 			'refreshUrl' {

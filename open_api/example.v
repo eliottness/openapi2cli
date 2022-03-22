@@ -11,7 +11,7 @@ pub mut:
 	value          Any
 }
 
-pub fn (mut example Example) from_json(json Any) {
+pub fn (mut example Example) from_json(json Any) ? {
 	for key, value in json.as_map() {
 		match key {
 			'externalValue' {

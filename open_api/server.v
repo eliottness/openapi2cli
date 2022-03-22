@@ -10,9 +10,9 @@ pub mut:
 	variables   map[string]ServerVariable
 }
 
-pub fn (mut server Server) from_json(json Any) {
+pub fn (mut server Server) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<Server>(object, 'url')
+	check_required<Server>(object, 'url') ?
 
 	for key, value in object {
 		match key {
@@ -24,7 +24,7 @@ pub fn (mut server Server) from_json(json Any) {
 			}
 			'variables' {
 				server.variables = decode_map<ServerVariable>(value.json_str()) or {
-					panic('Failed Server decoding: $err')
+					return error('Failed Server decoding: $err')
 				}
 			}
 			else {}
@@ -41,9 +41,9 @@ pub mut:
 	description   string
 }
 
-pub fn (mut server_variable ServerVariable) from_json(json Any) {
+pub fn (mut server_variable ServerVariable) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<ServerVariable>(object, 'default')
+	check_required<ServerVariable>(object, 'default') ?
 
 	for key, value in object {
 		match key {

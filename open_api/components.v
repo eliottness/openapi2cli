@@ -22,48 +22,48 @@ fn check_key_regex(str string) bool {
 	return reg.matches_string(str)
 }
 
-pub fn (mut components Components) from_json(json Any) {
+pub fn (mut components Components) from_json(json Any) ? {
 	for key, value in json.as_map() {
 		match key {
-			'SecuritySchemes' {
+			'securitySchemes' {
 				components.security_schemes = decode_map_sumtype<SecurityScheme>(value.json_str(),
-					check_key_regex) or { panic('Failed Components decoding: $err') }
+					check_key_regex) or { return error('Failed Components decoding: $err') }
 			}
 			'requestBodies' {
 				components.request_bodies = decode_map_sumtype<RequestBody>(value.json_str(),
-					check_key_regex) or { panic('Failed Components decoding: $err') }
+					check_key_regex) or { return error('Failed Components decoding: $err') }
 			}
 			'schemas' {
 				components.schemas = decode_map_sumtype<Schema>(value.json_str(), check_key_regex) or {
-					panic('Failed Components decoding: $err')
+					return error('Failed Components decoding: $err')
 				}
 			}
 			'responses' {
 				components.responses = decode_map_sumtype<Response>(value.json_str(),
-					check_key_regex) or { panic('Failed Components decoding: $err') }
+					check_key_regex) or { return error('Failed Components decoding: $err') }
 			}
 			'parameters' {
 				components.parameters = decode_map_sumtype<Parameter>(value.json_str(),
-					check_key_regex) or { panic('Failed Components decoding: $err') }
+					check_key_regex) or { return error('Failed Components decoding: $err') }
 			}
 			'examples' {
 				components.examples = decode_map_sumtype<Example>(value.json_str(), check_key_regex) or {
-					panic('Failed Components decoding: $err')
+					return error('Failed Components decoding: $err')
 				}
 			}
 			'headers' {
 				components.headers = decode_map_sumtype<Header>(value.json_str(), check_key_regex) or {
-					panic('Failed Components decoding: $err')
+					return error('Failed Components decoding: $err')
 				}
 			}
 			'links' {
 				components.links = decode_map_sumtype<Link>(value.json_str(), check_key_regex) or {
-					panic('Failed Components decoding: $err')
+					return error('Failed Components decoding: $err')
 				}
 			}
 			'callbacks' {
 				components.callbacks = decode_map_sumtype<Callback>(value.json_str(),
-					check_key_regex) or { panic('Failed Components decoding: $err') }
+					check_key_regex) or { return error('Failed Components decoding: $err') }
 			}
 			else {}
 		}
