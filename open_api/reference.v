@@ -30,7 +30,9 @@ pub fn from_json<T>(json Any) ?ObjectRef<T> {
 	if tmp := decode<T>(json.json_str()) {
 		return tmp
 	}
-	return decode<Reference>(json.json_str()) or { return error('') }
+	return decode<Reference>(json.json_str()) or {
+		return error('Failed ObjectRef<$T.name> decoding: $err')
+	}
 }
 
 // ---------------------------------------- //
