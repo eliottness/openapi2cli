@@ -28,7 +28,8 @@ pub mut:
 
 pub fn (mut security_scheme SecurityScheme) from_json(json Any) {
 	object := json.as_map()
-	check_required<SecurityScheme>(object, 'type', 'in', 'openIdConnectUrl', 'name', 'scheme', 'flows')
+	check_required<SecurityScheme>(object, 'type', 'in', 'openIdConnectUrl', 'name', 'scheme',
+		'flows')
 
 	for key, value in json.as_map() {
 		match key {
