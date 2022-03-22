@@ -5,8 +5,8 @@ import json
 
 struct Encoding {
 pub mut:
-	content_type   string                       [json: 'contentType']
-	allow_reserved bool                         [json: 'allowReserved']
+	content_type   string
+	allow_reserved bool
 	headers        map[string]ObjectRef<Header>
 	style          string
 	explode        bool

@@ -77,10 +77,7 @@ pub mut:
 
 pub fn (mut license License) from_json(json Any) {
 	object := json.as_map()
-
-	if 'name' !in object {
-		panic('Failed Info decoding: "name" not specified !')
-	}
+	check_required<License>(object, 'name')
 
 	for key, value in object {
 		match key {
