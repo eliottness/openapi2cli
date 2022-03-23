@@ -102,4 +102,8 @@ pub fn (mut external_doc ExternalDocumentation) from_json(json Any) ? {
 			else {}
 		}
 	}
+
+	if external_doc.url != '' && !check_email_regex(external_doc.url) {
+		return error('Failed ExternalDocumentation decoding: "url" do not match url regex expression.')
+	} 
 }
