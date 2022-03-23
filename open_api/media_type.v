@@ -74,7 +74,7 @@ pub fn (mut encoding Encoding) from_json(json Any) ? {
 	if 'style' !in object {
 		encoding.style = 'form'
 	}
-	
+
 	if 'explode' !in object && encoding.style == 'form' {
 		encoding.explode = true
 	}
