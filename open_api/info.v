@@ -40,6 +40,10 @@ pub fn (mut info Info) from_json(json Any) ? {
 			else {}
 		}
 	}
+
+	if info.terms_of_service != '' && !check_url_regex(info.terms_of_service) {
+		return error('Failed Info decoding: "termsOfService" do not match url regex expression')
+	}
 }
 
 // ---------------------------------------- //
@@ -61,11 +65,11 @@ pub fn (mut contact Contact) from_json(json Any) ? {
 		}
 	}
 
-	if !check_url_regex(contact.url) {
+	if contact.url != '' && !check_url_regex(contact.url) {
 		return error('Failed Contact decoding: "url" do not match url regex expression')
 	}
 
-	if !check_email_regex(contact.email) {
+	if contact.email != '' && !check_email_regex(contact.email) {
 		return error('Failed Contact decoding: "email" do not match email regex expression')
 	}
 }
@@ -90,7 +94,7 @@ pub fn (mut license License) from_json(json Any) ? {
 		}
 	}
 
-	if !check_url_regex(license.url) {
+	if license.url != '' && !check_url_regex(license.url) {
 		return error('Failed License decoding: "url" do not match url regex expression')
 	}
 }

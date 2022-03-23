@@ -12,7 +12,13 @@ pub mut:
 }
 
 pub fn (mut media_type MediaType) from_json(json Any) ? {
-	for key, value in json.as_map() {
+	object := json.as_map()
+
+	if 'example' in object && 'examples' in object {
+		return error('Failed MediaType decoding: "example" and "examples" are mutually exclusives')
+	}
+
+	for key, value in object {
 		match key {
 			'schema' {
 				media_type.schema = from_json<Schema>(value.json_str()) ?

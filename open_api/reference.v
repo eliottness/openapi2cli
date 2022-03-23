@@ -27,10 +27,10 @@ pub fn (mut reference Reference) from_json(json Any) ? {
 type ObjectRef<T> = Reference | T
 
 pub fn from_json<T>(json Any) ?ObjectRef<T> {
-	if tmp := decode<T>(json.json_str()) {
+	if tmp := decode<Reference>(json.json_str()) {
 		return tmp
 	}
-	return decode<Reference>(json.json_str()) or {
+	return decode<T>(json.json_str()) or {
 		return error('Failed ObjectRef<$T.name> decoding: $err')
 	}
 }
