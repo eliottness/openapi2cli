@@ -3,13 +3,15 @@ module open_api
 import x.json2 { Any }
 import json
 
-struct SecurityRequirement {
-pub mut:
-	requirements map[string][]string // Todo: make it match the '{name}' type
-}
+type SecurityRequirement = map[string][]string
 
 pub fn (mut requirement SecurityRequirement) from_json(json Any) ? {
-	// Todo
+	mut tmp := map[string][]string{}
+	for key, value in json.as_map() {
+		tmp[key] = decode_array_string(value.json_str()) ?
+	}
+	requirement = tmp
+	// Todo: Check that key match the '{name}' type
 }
 
 // ---------------------------------------- //
