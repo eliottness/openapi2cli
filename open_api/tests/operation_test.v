@@ -9,6 +9,6 @@ fn test_operation_struct() ? {
 	assert operation.summary == 'Updates a pet in the store with form data'
 	assert operation.operation_id == 'updatePetWithForm'
 	assert operation.parameters.len == 1
-	// assert operation.responses.len == 2 Todo: Correct it once Response is done
+	assert operation.responses.len == 2
 	assert operation.security.len == 1
 }
