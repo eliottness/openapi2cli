@@ -37,4 +37,8 @@ pub fn (mut link Link) from_json(json Any) ? {
 			else {}
 		}
 	}
+
+	if link.operation_ref != '' && link.operation_id != '' {
+		return error('Failed Link decoding: "operationId" and "operationRef" are mutually exclusives')
+	}
 }
