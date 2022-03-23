@@ -49,7 +49,8 @@ pub mut:
 }
 
 pub fn (mut encoding Encoding) from_json(json Any) ? {
-	for key, value in json.as_map() {
+	object := json.as_map()
+	for key, value in object {
 		match key {
 			'contentType' {
 				encoding.content_type = value.str()
@@ -68,5 +69,13 @@ pub fn (mut encoding Encoding) from_json(json Any) ? {
 			}
 			else {}
 		}
+	}
+
+	if 'style' !in object {
+		encoding.style = 'form'
+	}
+	
+	if 'explode' !in object && encoding.style == 'form' {
+		encoding.explode = true
 	}
 }
