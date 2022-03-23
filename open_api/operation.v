@@ -64,6 +64,21 @@ pub fn (mut operation Operation) from_json(json Any) ? {
 			else {}
 		}
 	}
+	operation.validate(object) ?
+}
+
+fn (mut operation Operation) validate(object map[string]Any) ? {
+	mut checked := map[string]string{}
+	for parameter in operation.parameters {
+		if parameter is Reference {
+			continue
+		}
+		param := parameter as Parameter
+		if param.name in checked && checked[param.name] == param.location {
+			return error('Failed Operation decoding: parameter with identical "name" and "in" found.')
+		}
+		checked[param.name] = param.location
+	}
 }
 
 struct ExternalDocumentation {
