@@ -106,4 +106,8 @@ fn (mut parameter Parameter) validate(object map[string]Any) ? {
 	if parameter.style == 'form' && 'explode' !in object {
 		parameter.explode = true
 	}
+
+	if parameter.content.len > 1 {
+		return error('Failed Parameter decoding: "content" must contain only one entry.')
+	}
 }
