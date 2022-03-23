@@ -4,17 +4,11 @@ import x.json2 { Any }
 import json
 
 struct Header {
-pub mut:
-	required          bool
-	allow_empty_value bool
-	description       string
-	deprecated        bool
+	Parameter
 }
 
 pub fn (mut header Header) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<Header>(object, 'required') ?
-
 	for key, value in object {
 		match key {
 			'required' {
@@ -31,5 +25,28 @@ pub fn (mut header Header) from_json(json Any) ? {
 			}
 			else {}
 		}
+	}
+	header.validate(object) ?
+}
+
+fn (mut header Header) validate(object map[string]Any) ? {
+	if 'name' in object || 'in' in object {
+		return error('Failed Header decoding: "name" and "in" must not be specified.')
+	}
+
+	if 'example' in object && 'examples' in object {
+		return error('Failed Header decoding: "example" and "examples" are mutually exclusives')
+	}
+
+	if 'style' !in object {
+		header.style = 'simple'
+	}
+
+	if header.style == 'form' && 'explode' !in object {
+		header.explode = true
+	}
+
+	if header.content.len > 1 {
+		return error('Failed Header decoding: "content" must contain only one entry.')
 	}
 }

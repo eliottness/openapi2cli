@@ -12,7 +12,13 @@ pub mut:
 }
 
 pub fn (mut example Example) from_json(json Any) ? {
-	for key, value in json.as_map() {
+	object := json.as_map()
+
+	if 'value' in object && 'externalValue' in object {
+		return error('Failed Example decoding: "value" and "externalValue" are mutually exclusive')
+	}
+
+	for key, value in object {
 		match key {
 			'externalValue' {
 				example.external_value = value.str()

@@ -27,11 +27,11 @@ pub fn (mut components Components) from_json(json Any) ? {
 		match key {
 			'securitySchemes' {
 				components.security_schemes = decode_map_sumtype<SecurityScheme>(value.json_str(),
-					check_key_regex) or { return error('Failed Components decoding: $err') }
+					check_key_regex) ?
 			}
 			'requestBodies' {
 				components.request_bodies = decode_map_sumtype<RequestBody>(value.json_str(),
-					check_key_regex) or { return error('Failed Components decoding: $err') }
+					check_key_regex) ?
 			}
 			'schemas' {
 				components.schemas = decode_map_sumtype<Schema>(value.json_str(), check_key_regex) or {
@@ -40,11 +40,11 @@ pub fn (mut components Components) from_json(json Any) ? {
 			}
 			'responses' {
 				components.responses = decode_map_sumtype<Response>(value.json_str(),
-					check_key_regex) or { return error('Failed Components decoding: $err') }
+					check_key_regex) ?
 			}
 			'parameters' {
 				components.parameters = decode_map_sumtype<Parameter>(value.json_str(),
-					check_key_regex) or { return error('Failed Components decoding: $err') }
+					check_key_regex) ?
 			}
 			'examples' {
 				components.examples = decode_map_sumtype<Example>(value.json_str(), check_key_regex) or {
@@ -63,7 +63,7 @@ pub fn (mut components Components) from_json(json Any) ? {
 			}
 			'callbacks' {
 				components.callbacks = decode_map_sumtype<Callback>(value.json_str(),
-					check_key_regex) or { return error('Failed Components decoding: $err') }
+					check_key_regex) ?
 			}
 			else {}
 		}

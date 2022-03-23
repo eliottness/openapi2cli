@@ -26,9 +26,7 @@ pub fn (mut operation Operation) from_json(json Any) ? {
 	for key, value in json.as_map() {
 		match key {
 			'externalDocs' {
-				operation.external_docs = decode<ExternalDocumentation>(value.json_str()) or {
-					return error('Failed Operation decoding: $err')
-				}
+				operation.external_docs = decode<ExternalDocumentation>(value.json_str()) ?
 			}
 			'operationId' {
 				operation.operation_id = value.str()
@@ -37,9 +35,7 @@ pub fn (mut operation Operation) from_json(json Any) ? {
 				operation.request_body = from_json<RequestBody>(value) ?
 			}
 			'tags' {
-				operation.tags = decode_array_string(value.json_str()) or {
-					return error('Failed Operation decoding: $err')
-				}
+				operation.tags = decode_array_string(value.json_str()) ?
 			}
 			'summary' {
 				operation.summary = value.str()
@@ -48,32 +44,22 @@ pub fn (mut operation Operation) from_json(json Any) ? {
 				operation.description = value.str()
 			}
 			'parameters' {
-				operation.parameters = decode<[]ObjectRef<Parameter>>(value.json_str()) or {
-					return error('Failed Operation decoding: $err')
-				}
+				operation.parameters = decode<[]ObjectRef<Parameter>>(value.json_str()) ?
 			}
 			'responses' {
-				operation.responses = decode<Responses>(value.json_str()) or {
-					return error('Failed Operation decoding: $err')
-				}
+				operation.responses = decode<Responses>(value.json_str()) ?
 			}
 			'callbacks' {
-				operation.callbacks = decode_map_sumtype<Callback>(value.json_str(), fake_predicat) or {
-					return error('Failed Operation decoding: $err')
-				}
+				operation.callbacks = decode_map_sumtype<Callback>(value.json_str(), fake_predicat) ?
 			}
 			'deprecated' {
 				operation.deprecated = value.bool()
 			}
 			'security' {
-				operation.security = decode_array<SecurityRequirement>(value.json_str()) or {
-					return error('Failed Operation decoding: $err')
-				}
+				operation.security = decode_array<SecurityRequirement>(value.json_str()) ?
 			}
 			'servers' {
-				operation.servers = decode_array<Server>(value.json_str()) or {
-					return error('Failed Operation decoding: $err')
-				}
+				operation.servers = decode_array<Server>(value.json_str()) ?
 			}
 			else {}
 		}
