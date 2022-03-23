@@ -28,8 +28,6 @@ pub mut:
 
 pub fn (mut security_scheme SecurityScheme) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<SecurityScheme>(object, 'type') ?
-
 	for key, value in json.as_map() {
 		match key {
 			'type' {
@@ -47,7 +45,7 @@ pub fn (mut security_scheme SecurityScheme) from_json(json Any) ? {
 			'scheme' {
 				security_scheme.scheme = value.str()
 			}
-			'security_scheme' {
+			'flows' {
 				security_scheme.flows = decode<OAuthFlows>(value.json_str()) ?
 			}
 			'bearerFormat' {
@@ -57,6 +55,35 @@ pub fn (mut security_scheme SecurityScheme) from_json(json Any) ? {
 				security_scheme.description = value.str()
 			}
 			else {}
+		}
+	}
+	security_scheme.validate(object) ?
+}
+
+fn (mut security_scheme SecurityScheme) validate(object map[string]Any) ? {
+	check_required<SecurityScheme>(object, 'type') ?
+
+	match security_scheme.security_type {
+		'apiKey' {
+			check_required<SecurityScheme>(object, 'name', 'in') ?
+			if security_scheme.location !in ['query', 'header', 'cookie'] {
+				return error('Failed SecurityScheme decoding: "in" is not valid $security_scheme.location')
+			}
+		}
+		'http' {
+			check_required<SecurityScheme>(object, 'scheme') ?
+		}
+		'oauth2' {
+			check_required<SecurityScheme>(object, 'flows') ?
+		}
+		'openIdConnect' {
+			check_required<SecurityScheme>(object, 'openIdConnectUrl') ?
+			if !check_url_regex(security_scheme.open_id_connect_url) {
+				return error('Failed SecurityScheme decoding: "OpenIdConnectUrl" do not match url regex expression')
+			}
+		}
+		else {
+			return error('Failed SecurityScheme decoding: "type" is not valid $security_scheme.security_type')
 		}
 	}
 }
@@ -76,15 +103,19 @@ pub fn (mut flows OAuthFlows) from_json(json Any) ? {
 		match key {
 			'clientCredentials' {
 				flows.client_credentials = decode<OAuthFlow>(value.json_str()) ?
+				check_required<OAuthFlow>(value.as_map(), 'tokenUrl') ?
 			}
 			'authorizationCode' {
 				flows.authorization_code = decode<OAuthFlow>(value.json_str()) ?
+				check_required<OAuthFlow>(value.as_map(), 'authorizationUrl', 'tokenUrl') ?
 			}
 			'implicit' {
 				flows.implicit = decode<OAuthFlow>(value.json_str()) ?
+				check_required<OAuthFlow>(value.as_map(), 'authorizationUrl') ?
 			}
 			'password' {
 				flows.password = decode<OAuthFlow>(value.json_str()) ?
+				check_required<OAuthFlow>(value.as_map(), 'tokenUrl') ?
 			}
 			else {}
 		}
@@ -103,7 +134,7 @@ pub mut:
 
 pub fn (mut flow OAuthFlow) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<OAuthFlow>(object, 'authorizationUrl', 'tokenUrl', 'scopes') ?
+	check_required<OAuthFlow>(object, 'scopes') ?
 
 	for key, value in object {
 		match key {
@@ -121,5 +152,18 @@ pub fn (mut flow OAuthFlow) from_json(json Any) ? {
 			}
 			else {}
 		}
+	}
+	flow.validate() ?
+}
+
+fn (mut flow OAuthFlow) validate() ? {
+	if flow.authorization_url != '' && !check_url_regex(flow.authorization_url) {
+		return error('Failed OAuthFlow decoding: "AuthorizationUrl" do not match url regex expression')
+	}
+	if flow.token_url != '' && !check_url_regex(flow.token_url) {
+		return error('Failed OAuthFlow decoding: "tokenUrl" do not match url regex expression')
+	}
+	if flow.refresh_url != '' && !check_url_regex(flow.refresh_url) {
+		return error('Failed OAuthFlow decoding: "refreshUrl" do not match url regex expression')
 	}
 }
