@@ -4,7 +4,7 @@ import x.json2 { Any }
 import json
 
 struct Parameter {
-pub mut: // Todo: To be completed
+pub mut:
 	name              string
 	location          string
 	description       string
@@ -22,7 +22,6 @@ pub mut: // Todo: To be completed
 
 pub fn (mut parameter Parameter) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<Parameter>(object, 'in', 'name', 'required') ?
 
 	for key, value in json.as_map() {
 		match key {
@@ -67,5 +66,44 @@ pub fn (mut parameter Parameter) from_json(json Any) ? {
 			}
 			else {}
 		}
+	}
+	parameter.validate(object) ?
+}
+
+fn (mut parameter Parameter) validate(object map[string]Any) ? {
+	check_required<Parameter>(object, 'in', 'name') ?
+
+	if 'example' in object && 'examples' in object {
+		return error('Failed Parameter decoding: "example" and "examples" are mutually exclusives')
+	}
+
+	mut default_style := ''
+	match parameter.location {
+		'query' {
+			default_style = 'form'
+		}
+		'header' {
+			default_style = 'simple'
+		}
+		'path' {
+			if !parameter.required {
+				return error('Failed Parameter decoding: "required" must be true in this case.')
+			}
+			default_style = 'simple'
+		}
+		'decode' {
+			default_style = 'form'
+		}
+		else {
+			return error('Failed Parameter decoding: "in" value not valid.')
+		}
+	}
+
+	if 'style' !in object {
+		parameter.style = default_style
+	}
+
+	if parameter.style == 'form' && 'explode' !in object {
+		parameter.explode = true
 	}
 }
