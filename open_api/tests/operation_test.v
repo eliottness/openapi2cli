@@ -1,0 +1,14 @@
+import open_api
+import os
+
+fn test_operation_struct() ? {
+	content := os.read_file(@VMODROOT + '/open_api/testdata/operation.json') ?
+	operation := open_api.decode<open_api.Operation>(content) ?
+
+	assert operation.tags.len == 1
+	assert operation.summary == 'Updates a pet in the store with form data'
+	assert operation.operation_id == 'updatePetWithForm'
+	assert operation.parameters.len == 1
+	// assert operation.responses.len == 2 Todo: Correct it once Response is done
+	assert operation.security.len == 1
+}
