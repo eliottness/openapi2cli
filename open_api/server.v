@@ -35,7 +35,7 @@ pub fn (mut server Server) from_json(json Any) ? {
 struct ServerVariable {
 pub mut:
 	default_value string
-	enum_values   string
+	enum_values   []string
 	description   string
 }
 
@@ -46,9 +46,18 @@ pub fn (mut server_variable ServerVariable) from_json(json Any) ? {
 	for key, value in object {
 		match key {
 			'default' { server_variable.default_value = value.str() }
-			'enum' { server_variable.enum_values = value.str() }
+			'enum' { server_variable.enum_values = decode_array_string(value.json_str()) ? }
 			'description' { server_variable.description = value.str() }
 			else {}
+		}
+	}
+
+	if 'enum' in object {
+		if server_variable.enum_values.len == 0 {
+			return error('Failed ServerVariable decoding: "enum" should not be empty.')
+		}
+		if server_variable.default_value !in server_variable.enum_values {
+			return error('Failed ServerVariable decoding: "default" should be in "enum".')
 		}
 	}
 }
