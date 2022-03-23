@@ -2,7 +2,6 @@ module open_api
 
 import x.json2 { Any }
 import json
-import regex
 
 struct Components {
 pub mut:
@@ -15,11 +14,6 @@ pub mut:
 	headers          map[string]ObjectRef<Header>
 	links            map[string]ObjectRef<Link>
 	callbacks        map[string]ObjectRef<Callback>
-}
-
-fn check_key_regex(str string) bool {
-	mut reg := regex.regex_opt(r'^[\w\.\-]+$') or { panic('Failed to initialize regex expression') }
-	return reg.matches_string(str)
 }
 
 pub fn (mut components Components) from_json(json Any) ? {

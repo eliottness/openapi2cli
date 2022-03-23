@@ -52,14 +52,21 @@ pub mut:
 }
 
 pub fn (mut contact Contact) from_json(json Any) ? {
-	object := json.as_map()
-	for key, value in object {
+	for key, value in json.as_map() {
 		match key {
 			'name' { contact.name = value.str() }
 			'url' { contact.url = value.str() }
 			'email' { contact.email = value.str() }
 			else {}
 		}
+	}
+
+	if !check_url_regex(contact.url) {
+		return error('Failed Contact decoding: "url" do not match url regex expression')
+	}
+
+	if !check_email_regex(contact.email) {
+		return error('Failed Contact decoding: "email" do not match email regex expression')
 	}
 }
 
@@ -81,5 +88,9 @@ pub fn (mut license License) from_json(json Any) ? {
 			'url' { license.url = value.str() }
 			else {}
 		}
+	}
+
+	if !check_url_regex(license.url) {
+		return error('Failed License decoding: "url" do not match url regex expression')
 	}
 }
