@@ -20,20 +20,9 @@ pub mut:
 	parameters  []ObjectRef<Parameter>
 }
 
-pub fn clean_path_expression(path string) string {
-	mut path_copy := path.clone()
-	mut expression := path_copy.find_between('{', '}')
-
-	for expression != '' {
-		path_copy = path_copy.replace(expression, '')
-		expression = path_copy.find_between('{', '}')
-	}
-
-	return path_copy
-}
-
 pub fn (mut path_item PathItem) from_json(json Any) ? {
-	for key, value in json.as_map() {
+	object := json.as_map()
+	for key, value in object {
 		match key {
 			'\$ref' {
 				path_item.ref = value.str()
@@ -77,6 +66,35 @@ pub fn (mut path_item PathItem) from_json(json Any) ? {
 			else {}
 		}
 	}
+	path_item.validate(object) ?
+}
+
+fn (mut path_item PathItem) validate(object map[string]Any) ? {
+	mut checked := map[string]string{}
+	for parameter in path_item.parameters {
+		if parameter is Reference {
+			continue
+		}
+		param := parameter as Parameter
+		if param.name in checked && checked[param.name] == param.location {
+			return error('Failed Path_item decoding: parameter with identical "name" and "in" found.')
+		}
+		checked[param.name] = param.location
+	}
+}
+
+// ---------------------------------------- //
+
+fn clean_path_expression(path string) string {
+	mut path_copy := path.clone()
+	mut expression := path_copy.find_between('{', '}')
+
+	for expression != '' {
+		path_copy = path_copy.replace(expression, '')
+		expression = path_copy.find_between('{', '}')
+	}
+
+	return path_copy
 }
 
 pub fn (mut paths map[string]PathItem) from_json(json Any) ? {
