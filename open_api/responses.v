@@ -3,22 +3,18 @@ module open_api
 import x.json2 { Any }
 import json
 
-struct Responses {
-pub mut:
-	default_response ObjectRef<Response>
-	http_status_code ObjectRef<Response> // Todo: find a way to do integer matching
-}
+type Responses = map[string]ObjectRef<Response>
 
 pub fn (mut responses Responses) from_json(json Any) ? {
+	mut tmp := map[string]ObjectRef<Response>{}
 	for key, value in json.as_map() {
-		match key {
-			'default' {
-				responses.default_response = from_json<Response>(value.json_str()) ?
-			}
-			// Todo finish status code
-			else {}
+		if check_http_code_regex(key) || key == 'default' {
+			tmp[key] = from_json<Response>(value) ?
+		} else {
+			return error('Failed Responses decoding: invalid http code value $key')
 		}
 	}
+	responses = tmp
 }
 
 // ---------------------------------------- //
@@ -50,6 +46,16 @@ pub fn (mut response Response) from_json(json Any) ? {
 				response.links = decode_map_sumtype<Link>(value.json_str(), fake_predicat) ?
 			}
 			else {}
+		}
+	}
+
+	if 'Content-Type' in response.headers {
+		response.headers.delete('Content-Type')
+	}
+
+	for key in response.links.keys() {
+		if !check_key_regex(key) {
+			return error('Failed Response decoding: "links" key do not comply with the format.')
 		}
 	}
 }

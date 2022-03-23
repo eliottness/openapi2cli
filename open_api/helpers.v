@@ -109,3 +109,10 @@ fn check_email_regex(str string) bool {
 	}
 	return reg.matches_string(str)
 }
+
+fn check_http_code_regex(str string) bool {
+	mut reg := regex.regex_opt(r'^([1-5][\d][\d])|([1-5]XX)$') or {
+		panic('Failed to initialize regex expression')
+	}
+	return reg.matches_string(str)
+}

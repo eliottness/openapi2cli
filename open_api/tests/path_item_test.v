@@ -8,7 +8,6 @@ fn test_path_item_struct() ? {
 	assert path_item.get.description == 'Returns pets based on ID'
 	assert path_item.get.summary == 'Find pets by ID'
 	assert path_item.get.operation_id == 'getPetsById'
-	// assert path_item.get.responses.len == 1 Todo: fix when responses is finished
-
+	assert path_item.get.responses.len == 1
 	assert path_item.parameters.len == 1
 }
