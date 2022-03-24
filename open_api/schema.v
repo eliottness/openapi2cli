@@ -223,10 +223,10 @@ pub fn (mut discriminator Discriminator) from_json(json Any) ? {
 	for key, value in object {
 		match key {
 			'propertyName' {
-				discriminator.property_name == value.str()
+				discriminator.property_name = value.str()
 			}
 			'mapping' {
-				discriminator.mapping == decode_map_string(value.json_str()) ?
+				discriminator.mapping = decode_map_string(value.json_str()) ?
 			}
 			else {}
 		}
@@ -248,19 +248,19 @@ pub fn (mut xml XML) from_json(json Any) ? {
 	for key, value in json.as_map() {
 		match key {
 			'name' {
-				xml.name == value.str()
+				xml.name = value.str()
 			}
 			'namespace' {
-				xml.namespace == value.str()
+				xml.namespace = value.str()
 			}
 			'prefix' {
-				xml.prefix == value.str()
+				xml.prefix = value.str()
 			}
 			'attribute' {
-				xml.attribute == value.bool()
+				xml.attribute = value.bool()
 			}
 			'wrapped' {
-				xml.wrapped == value.bool()
+				xml.wrapped = value.bool()
 			}
 			else {}
 		}

@@ -28,9 +28,7 @@ pub fn (mut components Components) from_json(json Any) ? {
 					check_key_regex) ?
 			}
 			'schemas' {
-				components.schemas = decode_map_sumtype<Schema>(value.json_str(), check_key_regex) or {
-					return error('Failed Components decoding: $err')
-				}
+				components.schemas = decode_map_sumtype<Schema>(value.json_str(), check_key_regex) ?
 			}
 			'responses' {
 				components.responses = decode_map_sumtype<Response>(value.json_str(),
@@ -41,19 +39,13 @@ pub fn (mut components Components) from_json(json Any) ? {
 					check_key_regex) ?
 			}
 			'examples' {
-				components.examples = decode_map_sumtype<Example>(value.json_str(), check_key_regex) or {
-					return error('Failed Components decoding: $err')
-				}
+				components.examples = decode_map_sumtype<Example>(value.json_str(), check_key_regex) ?
 			}
 			'headers' {
-				components.headers = decode_map_sumtype<Header>(value.json_str(), check_key_regex) or {
-					return error('Failed Components decoding: $err')
-				}
+				components.headers = decode_map_sumtype<Header>(value.json_str(), check_key_regex) ?
 			}
 			'links' {
-				components.links = decode_map_sumtype<Link>(value.json_str(), check_key_regex) or {
-					return error('Failed Components decoding: $err')
-				}
+				components.links = decode_map_sumtype<Link>(value.json_str(), check_key_regex) ?
 			}
 			'callbacks' {
 				components.callbacks = decode_map_sumtype<Callback>(value.json_str(),
@@ -62,4 +54,25 @@ pub fn (mut components Components) from_json(json Any) ? {
 			else {}
 		}
 	}
+	components.validate() ?
+}
+
+fn check_keys(keys []string) ? {
+	keys.map(fn (key string) ? {
+		if !check_key_regex(key) {
+			return error('Failed Components Decoding: $key do not respect key regex format.')
+		}
+	})
+}
+
+fn (mut components Components) validate() ? {
+	check_keys(components.security_schemes.keys()) ?
+	check_keys(components.request_bodies.keys()) ?
+	check_keys(components.schemas.keys()) ?
+	check_keys(components.responses.keys()) ?
+	check_keys(components.parameters.keys()) ?
+	check_keys(components.examples.keys()) ?
+	check_keys(components.headers.keys()) ?
+	check_keys(components.links.keys()) ?
+	check_keys(components.callbacks.keys()) ?
 }
