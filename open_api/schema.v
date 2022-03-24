@@ -2,6 +2,7 @@ module open_api
 
 import x.json2 { Any }
 import json
+import regex
 
 struct Schema {
 pub mut:
@@ -45,7 +46,8 @@ pub mut:
 }
 
 pub fn (mut schema Schema) from_json(json Any) ? {
-	for key, value in json.as_map() {
+	object := json.as_map()
+	for key, value in object {
 		match key {
 			'title' {
 				schema.title = value.str()
@@ -154,6 +156,55 @@ pub fn (mut schema Schema) from_json(json Any) ? {
 			}
 			else {}
 		}
+		schema.validate(object) ?
+	}
+}
+
+fn (mut schema Schema) validate(object map[string]Any) ? {
+	if 'readOnly' in object && 'writeOnly' in object {
+		return error('Failed Schema decoding: Schema cannot be writeOnly and readOnly')
+	}
+
+	mut format_values := []string{}
+	match schema.type_schema {
+		'' {}
+		'boolean' {}
+		'object' {}
+		'array' {
+			if 'items' !in object {
+				println(schema.items)
+				return error('Failed Schema decoding: "items" must be non-null if "type" is "array"')
+			}
+		}
+		'integer' {
+			format_values = ['int32', 'int64']
+		}
+		'number' {
+			format_values = ['float', 'double']
+		}
+		'string' {
+			format_values = ['byte', 'binary', 'date', 'date-time', 'password', 'iri',
+				'iri-reference', 'uri-template', 'idn-email', 'idn-hostname', 'json-pointer',
+				'relative-json-pointer', 'regex', 'time', 'duration', 'uuid', 'email', 'hostname',
+				'ipv4', 'ipv6', 'uri', 'uri-reference']
+			if schema.pattern != '' {
+				regex.regex_opt(schema.pattern) or {
+					return error('Failed Schema decoding: invalid pattern regex $schema.pattern')
+				}
+			}
+		}
+		'null' {
+			if !schema.nullable {
+				return error('Failed Schema decoding: "nullable" must be true to have a null "type"')
+			}
+		}
+		else {
+			return error('Failed Schema decoding: unsupported type $schema.type_schema')
+		}
+	}
+
+	if schema.format != '' && format_values.len != 0 && schema.format !in format_values {
+		return error('Failed Schema decoding: unsupported format value $schema.format')
 	}
 }
 

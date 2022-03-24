@@ -1068,10 +1068,6 @@ paths:
       responses:
         "200":
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PutTraceBatchResponse'
   /trace/{activity}/{assignment}/{submission}/{index}/{login}:
     post:
       tags:
@@ -1268,8 +1264,6 @@ components:
           $ref: '#/components/schemas/UUID'
         status:
           $ref: '#/components/schemas/Status2'
-    JsonNode:
-      type: array
     MultivaluedMapStringString:
       type: object
       additionalProperties:
@@ -1321,8 +1315,6 @@ components:
       properties:
         payloadType:
           type: string
-        payload:
-          $ref: '#/components/schemas/JsonNode'
     PutTraceBatchRequest:
       type: object
       properties:
@@ -1335,8 +1327,6 @@ components:
           type: string
         traceArchiveUrl:
           type: string
-    PutTraceBatchResponse:
-      type: array
     Request:
       required:
       - batchId
