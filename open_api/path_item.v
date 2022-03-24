@@ -102,14 +102,14 @@ fn clean_path_expression(path string) string {
 pub fn (mut paths Paths) from_json(json Any) ? {
 	mut save_value := map[string][]string{}
 	mut tmp := map[string]PathItem{}
-	
+
 	for key, value in json.as_map() {
 		if !key.starts_with('/') {
 			return error('Failed Paths decoding: path do not start with "/" !')
 		}
 
 		value_key := value.as_map().keys()
-		
+
 		for path in tmp.keys() {
 			value_ref := save_value[path]
 

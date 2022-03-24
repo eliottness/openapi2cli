@@ -30,6 +30,13 @@ pub fn decode_array_string(src string) ?[]string {
 	})
 }
 
+pub fn decode_array_any(src string) ?[]Any {
+	json := raw_decode(src) ?
+	return json.arr().map(fn (elt Any) Any {
+		return elt
+	})
+}
+
 // ---------------------------------------- //
 
 pub fn decode_map<T>(src string) ?map[string]T {

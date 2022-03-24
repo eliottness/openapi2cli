@@ -1,6 +1,7 @@
 module open_api
 
 import x.json2 { Any, raw_decode }
+import json
 
 struct Reference {
 pub mut:
