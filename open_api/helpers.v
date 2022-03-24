@@ -25,12 +25,9 @@ pub fn decode_array<T>(src string) ?[]T {
 
 pub fn decode_array_string(src string) ?[]string {
 	json := raw_decode(src) ?
-	mut typ := []string{}
-
-	for value in json.arr() {
-		typ << value.str()
-	}
-	return typ
+	return json.arr().map(fn (elt Any) string {
+		return elt.str()
+	})
 }
 
 // ---------------------------------------- //

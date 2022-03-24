@@ -85,6 +85,8 @@ fn (mut path_item PathItem) validate(object map[string]Any) ? {
 
 // ---------------------------------------- //
 
+type Paths = map[string]PathItem
+
 fn clean_path_expression(path string) string {
 	mut path_copy := path.clone()
 	mut expression := path_copy.find_between('{', '}')
@@ -97,24 +99,21 @@ fn clean_path_expression(path string) string {
 	return path_copy
 }
 
-pub fn (mut paths map[string]PathItem) from_json(json Any) ? {
+pub fn (mut paths Paths) from_json(json Any) ? {
 	mut save_value := map[string][]string{}
+	mut tmp := map[string]PathItem{}
+	
 	for key, value in json.as_map() {
 		if !key.starts_with('/') {
-			return error('Failed map[string]PathItem decoding: path do not start with "/" !')
+			return error('Failed Paths decoding: path do not start with "/" !')
 		}
 
-		path_item := decode<PathItem>(value.json_str()) ?
 		value_key := value.as_map().keys()
-
-		for path in paths.keys() {
-			cleaned_path := clean_path_expression(path)
-			cleaned_key := clean_path_expression(key)
-
-			path_item_ref := paths[path]
+		
+		for path in tmp.keys() {
 			value_ref := save_value[path]
 
-			if cleaned_path == cleaned_key {
+			if clean_path_expression(path) == clean_path_expression(key) {
 				verif := ('get' in value_key && 'get' in value_ref)
 					|| ('put' in value_key && 'put' in value_ref)
 					|| ('post' in value_key && 'post' in value_ref)
@@ -123,13 +122,15 @@ pub fn (mut paths map[string]PathItem) from_json(json Any) ? {
 					|| ('head' in value_key && 'head' in value_ref)
 					|| ('patch' in value_key && 'patch' in value_ref)
 					|| ('trace' in value_key && 'trace' in value_ref)
+
 				if verif {
-					return error('Failed map[string]PathItem decoding: Identical path found $key $path!')
+					return error('Failed Paths decoding: Identical path found !')
 				}
 			}
 		}
 
 		save_value[key] = value_key
-		paths[key] = path_item
+		tmp[key] = decode<PathItem>(value.json_str()) ?
 	}
+	paths = tmp
 }

@@ -1,7 +1,6 @@
 module open_api
 
 import x.json2 { Any, raw_decode }
-import json
 
 struct Reference {
 pub mut:
@@ -39,7 +38,7 @@ pub fn from_json<T>(json Any) ?ObjectRef<T> {
 
 pub fn (mut object []ObjectRef<Parameter>) from_json(json Any) ? {
 	for value in json.arr() {
-		str := raw_decode(value.json_str()) or { return error('') }
+		str := raw_decode(value.json_str()) ?
 		object << from_json<Parameter>(str) ?
 	}
 }

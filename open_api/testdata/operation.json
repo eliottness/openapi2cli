@@ -13,6 +13,9 @@
         "schema": {
           "type": "string"
         }
+      },
+      {
+          "$ref": "Here_is_a_ref"
       }
     ],
     "requestBody": {
