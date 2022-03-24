@@ -1,4 +1,5 @@
 import open_api
+import yaml
 import os
 
 fn test_basic_open_api_struct() ? {
@@ -41,5 +42,7 @@ fn test_open_api_struct_without_openapi() ? {
 }
 
 fn test_full_open_api_struct() ? {
-	// Todo at the end of the module creation
+	content := os.read_file(@VMODROOT + '/open_api/testdata/open_api_complex.yaml') ?
+	json := yaml.yaml_to_json(content, replace_tags: true) ?
+	open_api := open_api.decode<open_api.OpenApi>(json) ?
 }

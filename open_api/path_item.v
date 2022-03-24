@@ -98,20 +98,38 @@ fn clean_path_expression(path string) string {
 }
 
 pub fn (mut paths map[string]PathItem) from_json(json Any) ? {
+	mut save_value := map[string][]string{}
 	for key, value in json.as_map() {
 		if !key.starts_with('/') {
 			return error('Failed map[string]PathItem decoding: path do not start with "/" !')
 		}
 
+		path_item := decode<PathItem>(value.json_str()) ?
+		value_key := value.as_map().keys()
+
 		for path in paths.keys() {
 			cleaned_path := clean_path_expression(path)
-			cleaned_k := clean_path_expression(key)
+			cleaned_key := clean_path_expression(key)
 
-			if cleaned_path == cleaned_k {
-				return error('Failed map[string]PathItem decoding: Identical path found !')
+			path_item_ref := paths[path]
+			value_ref := save_value[path]
+
+			if cleaned_path == cleaned_key {
+				verif := ('get' in value_key && 'get' in value_ref)
+					|| ('put' in value_key && 'put' in value_ref)
+					|| ('post' in value_key && 'post' in value_ref)
+					|| ('delete' in value_key && 'delete' in value_ref)
+					|| ('options' in value_key && 'options' in value_ref)
+					|| ('head' in value_key && 'head' in value_ref)
+					|| ('patch' in value_key && 'patch' in value_ref)
+					|| ('trace' in value_key && 'trace' in value_ref)
+				if verif {
+					return error('Failed map[string]PathItem decoding: Identical path found $key $path!')
+				}
 			}
 		}
 
-		paths[key] = decode<PathItem>(value.json_str()) ?
+		save_value[key] = value_key
+		paths[key] = path_item
 	}
 }

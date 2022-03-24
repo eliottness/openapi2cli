@@ -6,6 +6,10 @@ import json
 type Responses = map[string]ObjectRef<Response>
 
 pub fn (mut responses Responses) from_json(json Any) ? {
+	if json.str() == '' {
+		return
+	}
+
 	mut tmp := map[string]ObjectRef<Response>{}
 	for key, value in json.as_map() {
 		if check_http_code_regex(key) || key == 'default' {
