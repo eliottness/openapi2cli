@@ -701,10 +701,10 @@ paths:
     get:
       tags:
       - Recovery Resource
-      description: "Get the job recovering service configuration: \\n - batchSize:\
-        \ maximum number of jobs retried per trigger.\\n - maxMinutesLag: number of\
+      description: "Get the job recovering service configuration: \n - batchSize:\
+        \ maximum number of jobs retried per trigger.\n - maxMinutesLag: number of\
         \ minutes before a job in a transitory state is considered lost, and thus,\
-        \ eligible to recovery. \\n - retryMax: maximum number of automatic retries\
+        \ eligible to recovery. \n - retryMax: maximum number of automatic retries\
         \ before the job is considered unsalvageable and locked (manual retries don't\
         \ increment)."
       responses:
@@ -717,10 +717,10 @@ paths:
     put:
       tags:
       - Recovery Resource
-      description: "Set the job recovering service configuration: \\n - batchSize:\
-        \ maximum number of jobs retried per trigger.\\n - maxMinutesLag: number of\
+      description: "Set the job recovering service configuration: \n - batchSize:\
+        \ maximum number of jobs retried per trigger.\n - maxMinutesLag: number of\
         \ minutes before a job in a transitory state is considered lost, and thus,\
-        \ eligible to recovery. \\n - retryMax: maximum number of automatic retries\
+        \ eligible to recovery. \n - retryMax: maximum number of automatic retries\
         \ before the job is considered unsalvageable and locked (manual retries don't\
         \ increment)."
       requestBody:
@@ -1763,19 +1763,19 @@ components:
       type: object
       properties:
         activitySlug:
-          pattern: \\S
+          pattern: \S
           type: string
           nullable: false
         assignmentSlug:
-          pattern: \\S
+          pattern: \S
           type: string
           nullable: false
         fromSubmissionSlug:
-          pattern: \\S
+          pattern: \S
           type: string
           nullable: false
         toSubmissionSlug:
-          pattern: \\S
+          pattern: \S
           type: string
           nullable: false
     ValidatedSubmission:

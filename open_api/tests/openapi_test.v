@@ -1,6 +1,7 @@
 import open_api
 import yaml
 import os
+import regex
 
 fn test_basic_open_api_struct() ? {
 	content := os.read_file(@VMODROOT + '/open_api/testdata/open_api_basic.json') ?
@@ -41,8 +42,23 @@ fn test_open_api_struct_without_openapi() ? {
 	assert false
 }
 
+fn escape_escaped_char(str string) ?string {
+	mut tmp := str.clone()
+	mut checked := []string{}
+
+	mut reg := regex.regex_opt(r'\\[a-zA-Z]') ?
+	for char in reg.find_all_str(str) {
+		if char in checked { continue }
+		tmp = tmp.replace(char, '\\$char')
+		checked << char
+	}
+
+	return tmp
+}
+
 fn test_full_open_api_struct() ? {
-	content := os.read_file(@VMODROOT + '/open_api/testdata/open_api_complex.yaml') ?
+	mut content := os.read_file(@VMODROOT + '/open_api/testdata/open_api_complex.yaml') ?
+	content = escape_escaped_char(content) ?
 	json := yaml.yaml_to_json(content, replace_tags: true) ?
 	open_api := open_api.decode<open_api.OpenApi>(json) ?
 }
