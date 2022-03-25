@@ -7,7 +7,7 @@ struct OpenApi {
 pub mut:
 	openapi       string
 	info          Info
-	paths         map[string]PathItem
+	paths         Paths
 	external_docs ExternalDocumentation
 	servers       []Server
 	components    Components
@@ -28,7 +28,7 @@ pub fn (mut open_api OpenApi) from_json(json Any) ? {
 				open_api.info = decode<Info>(value.json_str()) ?
 			}
 			'paths' {
-				open_api.paths = decode<map[string]PathItem>(value.json_str()) ?
+				open_api.paths = decode<Paths>(value.json_str()) ?
 			}
 			'externalDocs' {
 				open_api.external_docs = decode<ExternalDocumentation>(value.json_str()) ?
@@ -48,13 +48,4 @@ pub fn (mut open_api OpenApi) from_json(json Any) ? {
 			else {}
 		}
 	}
-}
-
-// ---------------------------------------- //
-
-struct Schema {
-	// Todo: flemme
-}
-
-pub fn (mut schema Schema) from_json(json Any) ? {
 }
