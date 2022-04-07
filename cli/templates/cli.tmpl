@@ -1,0 +1,40 @@
+module main
+
+import cli
+import os
+import flag
+
+// TODO Run the command
+@for operation in operations
+
+fn @{operation}_run(cmd cli.Command) ? {
+}
+
+@end
+
+
+// TODO Create function adding the operation to the cli
+@for operation in operations
+
+fn @{operation}_register() cli.Command {
+}
+
+@end
+
+fn main() {
+
+    mut app := cli.Command{
+        name: '@title'
+        description: '@description'
+        execute: fn (cmd cli.Command) ? {
+            print_help_for_command(cmd)
+        }
+        commands: [
+            @for operation in operations
+                @{operation}_register(),
+            @end
+        ]
+    }
+    app.setup()
+    app.parse(os.args)
+}

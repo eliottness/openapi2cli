@@ -13,6 +13,7 @@ fn main() {
 	fp.skip_executable()
 
 	debug := fp.bool('debug', 0, false, 'Toggle Debug mode')
+	binary_name := fp.string('out-bin', 0, 'cli', 'Output binary name (Default: cli)')
 
 	args := fp.finalize() ?
 	if args.len != 1 {
@@ -22,5 +23,5 @@ fn main() {
 
 	yaml_filepath := args[0] ?
 	v_filepath := cli.build(yaml_filepath, debug) ?
-	os.execvp('v', ['build', v_filepath]) ?
+	os.execvp('v', [v_filepath, '-o', binary_name]) ?
 }
