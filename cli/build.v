@@ -4,10 +4,21 @@ import os
 import open_api
 import yaml
 
+fn render(operation_list []open_api.Operation, info_title string, info_description string) string {
+	operations := operation_list.clone()
+	title := info_title
+	description := info_description
+	return $tmpl('./templates/cli.tmpl')
+}
+
 pub fn build(path string, debug bool) ?string {
 	mut content := os.read_file(path) ?
 	content = escape_escaped_char(content) ?
 	raw_json := yaml.yaml_to_json(content, replace_tags: true, debug: int(debug)) ?
-	json_data := open_api.decode<open_api.OpenApi>(raw_json) ?
+	open_api := open_api.decode<open_api.OpenApi>(raw_json) ?
+	program := render([open_api.paths['/batch'].get], open_api.info.title, open.info.description)
+
+	os.write_file('./templated.v', program)
+
 	return json_data.str()
 }
