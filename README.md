@@ -9,6 +9,12 @@ Generate a binary `cli` from the yaml openAPI file
 $ openapi2cli openapi.yaml --out-bin cli
 ```
 
+## Elements mandatory in the openapi spec
+
+* title
+* version
+* globalm description
+
 ## Samples of pairs: spec + how to use it as cli
 
 ### Simple example

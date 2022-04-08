@@ -17,6 +17,9 @@ fn @{operation}_run(cmd cli.Command) ? {
 @for operation in operations
 
 fn @{operation}_register() cli.Command {
+    return cli.Command{
+        name: @operation.operation_id
+    };
 }
 
 @end
@@ -35,6 +38,11 @@ fn main() {
             @end
         ]
     }
+
+    app.add_command(
+
+    )
+
     app.setup()
     app.parse(os.args)
 }
