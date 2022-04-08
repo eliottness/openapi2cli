@@ -4,26 +4,6 @@ import cli
 import os
 import flag
 
-// TODO Run the command
-@for operation in operations
-
-fn @{operation}_run(cmd cli.Command) ? {
-}
-
-@end
-
-
-// TODO Create function adding the operation to the cli
-@for operation in operations
-
-fn @{operation}_register() cli.Command {
-    return cli.Command{
-        name: @operation.operation_id
-    };
-}
-
-@end
-
 fn main() {
 
     mut app := cli.Command{
@@ -32,16 +12,19 @@ fn main() {
         execute: fn (cmd cli.Command) ? {
             print_help_for_command(cmd)
         }
-        commands: [
-            @for operation in operations
-                @{operation}_register(),
-            @end
-        ]
     }
-
-    app.add_command(
-
-    )
+    
+    app.add_command([
+@for operation in operations
+        cli.Command{
+            name: '@{operation.operation_id}'
+            execute: fn (cmd cli.Command) ? {
+                println('hello @{operation.operation_id}')
+                return
+            }
+        }
+@end
+    ])
 
     app.setup()
     app.parse(os.args)
