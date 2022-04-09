@@ -1,4 +1,4 @@
-module cli
+module cli_builder
 
 import regex
 

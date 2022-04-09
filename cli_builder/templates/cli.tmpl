@@ -1,0 +1,32 @@
+module main
+
+import cli
+import os
+
+fn print_help_for_command(cmd cli.Command) ? {
+	println('Here is a help message that help')
+}
+
+fn main() {
+    mut app := cli.Command{
+        name: '@title'
+        description: '@description'
+        execute: print_help_for_command
+    }
+@for operation in operations
+    mut cmd := cli.Command{
+        name: '@operation.operation_id'
+    }
+    if @operation.description.len > 0 {
+        cmd.description = '@operation.description'
+	}
+    cmd.execute = fn (cmd cli.Command) ? {
+        println('hello subcommand')
+        return
+    }
+    app.add_command(cmd)
+@end
+
+    app.setup()
+    app.parse(os.args)
+}
