@@ -31,7 +31,7 @@ pub fn (mut operation Operation) from_json(json Any) ? {
 			'operationId' {
 				operation.operation_id = value.str()
 			}
-			'request_body' {
+			'requestBody' {
 				operation.request_body = from_json<RequestBody>(value) ?
 			}
 			'tags' {

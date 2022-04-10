@@ -14,6 +14,7 @@ pub fn build(path string, debug bool) ?string {
 	content = escape_escaped_char(content) ?
 	raw_json := yaml.yaml_to_json(content, replace_tags: true, debug: int(debug)) ?
 	open_api := open_api.decode<open_api.OpenApi>(raw_json) ?
+	assert open_api.servers.len == 1
 
 	file_path := @VMODROOT + '/templated.v'
 	mut program := render(open_api)
