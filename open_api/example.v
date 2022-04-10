@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 import json
 
-struct Example {
+pub struct Example {
 pub mut:
 	external_value string
 	summary        string

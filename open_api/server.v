@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 import json
 
-struct Server {
+pub struct Server {
 pub mut:
 	url         string
 	description string
@@ -32,7 +32,7 @@ pub fn (mut server Server) from_json(json Any) ? {
 
 // ---------------------------------------- //
 
-struct ServerVariable {
+pub struct ServerVariable {
 pub mut:
 	default_value string
 	enum_values   []string

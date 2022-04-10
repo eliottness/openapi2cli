@@ -13,7 +13,7 @@ $ openapi2cli openapi.yaml --out-bin cli
 
 * title
 * version
-* globalm description
+* global description
 
 ## Samples of pairs: spec + how to use it as cli
 

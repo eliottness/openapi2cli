@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 import json
 
-struct Parameter {
+pub struct Parameter {
 pub mut:
 	name              string
 	location          string

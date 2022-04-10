@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 import json
 
-struct Components {
+pub struct Components {
 pub mut:
 	security_schemes map[string]ObjectRef<SecurityScheme>
 	request_bodies   map[string]ObjectRef<RequestBody>

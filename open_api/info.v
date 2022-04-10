@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 import json
 
-struct Info {
+pub struct Info {
 pub mut:
 	title            string
 	version          string
@@ -48,7 +48,7 @@ pub fn (mut info Info) from_json(json Any) ? {
 
 // ---------------------------------------- //
 
-struct Contact {
+pub struct Contact {
 pub mut:
 	name  string
 	url   string
@@ -76,7 +76,7 @@ pub fn (mut contact Contact) from_json(json Any) ? {
 
 // ---------------------------------------- //
 
-struct License {
+pub struct License {
 pub mut:
 	name string
 	url  string

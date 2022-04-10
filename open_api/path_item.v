@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 import json
 
-struct PathItem {
+pub struct PathItem {
 pub mut:
 	ref         string
 	summary     string
@@ -40,7 +40,7 @@ pub fn (mut path_item PathItem) from_json(json Any) ? {
 			}
 			'put' {
 				path_item.put = decode<Operation>(value.json_str()) ?
-				path_item.operations['PUT'] = path_item.post
+				path_item.operations['PUT'] = path_item.put
 			}
 			'post' {
 				path_item.post = decode<Operation>(value.json_str()) ?
@@ -94,7 +94,7 @@ fn (mut path_item PathItem) validate(object map[string]Any) ? {
 
 // ---------------------------------------- //
 
-type Paths = map[string]PathItem
+pub type Paths = map[string]PathItem
 
 fn clean_path_expression(path string) string {
 	mut path_copy := path.clone()

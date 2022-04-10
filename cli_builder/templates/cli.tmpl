@@ -1,30 +1,47 @@
 module main
 
 import cli
+import open_api
 import os
+import x.json2 { Any }
 
 fn print_help_for_command(cmd cli.Command) ? {
 	println('Here is a help message that help')
 }
 
+fn execute_command(method string, cmd cli.Command) ? {
+	println('Here is the result of the ' + method +  ' query on ' + cmd.name)
+}
+
 fn main() {
     mut app := cli.Command{
-        name: '@title'
-        description: '@description'
+        name: "@api.info.title"
+        description: "@api.info.description"
         execute: print_help_for_command
     }
-@for operation in operations
-    mut cmd := cli.Command{
-        name: '@operation.operation_id'
-    }
-    if @operation.description.len > 0 {
-        cmd.description = '@operation.description'
+	mut cmd := cli.Command{}
+@for path, path_item in api.paths
+	@for method, operation in path_item.operations
+	if "@operation.operation_id" != "" {
+    	cmd = cli.Command{
+    	    name: "@operation.operation_id"
+			description: "@operation.description"
+    	}
+		@for parameter in operation.get_parameters()
+		if '@parameter.location' == 'path' {
+			cmd.add_flag(cli.Flag{
+				flag: cli.FlagType.string
+				name: '@parameter.name'
+				required: @parameter.required
+			})
+		}
+		@end
+    	cmd.execute = fn (cmd cli.Command) ? {
+			execute_command("@method", cmd) ?
+		}
+    	app.add_command(cmd)
 	}
-    cmd.execute = fn (cmd cli.Command) ? {
-        println('hello subcommand')
-        return
-    }
-    app.add_command(cmd)
+	@end
 @end
 
     app.setup()

@@ -4,7 +4,7 @@ import x.json2 { Any }
 import json
 import regex
 
-struct Schema {
+pub struct Schema {
 pub mut:
 	title             string
 	multiple_of       f64
@@ -210,7 +210,7 @@ fn (mut schema Schema) validate(object map[string]Any) ? {
 
 // ---------------------------------------- //
 
-struct Discriminator {
+pub struct Discriminator {
 pub mut:
 	property_name string
 	mapping       map[string]string
@@ -235,7 +235,7 @@ pub fn (mut discriminator Discriminator) from_json(json Any) ? {
 
 // ---------------------------------------- //
 
-struct XML {
+pub struct XML {
 pub mut:
 	name      string
 	namespace string

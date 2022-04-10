@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 import json
 
-struct MediaType {
+pub struct MediaType {
 pub mut:
 	schema   ObjectRef<Schema>
 	example  Any
@@ -39,7 +39,7 @@ pub fn (mut media_type MediaType) from_json(json Any) ? {
 
 // ---------------------------------------- //
 
-struct Encoding {
+pub struct Encoding {
 pub mut:
 	content_type   string
 	allow_reserved bool

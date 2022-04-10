@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 import json
 
-struct Operation {
+pub struct Operation {
 pub mut:
 	external_docs ExternalDocumentation
 	operation_id  string
@@ -81,7 +81,19 @@ fn (mut operation Operation) validate(object map[string]Any) ? {
 	}
 }
 
-struct ExternalDocumentation {
+pub fn (operation Operation) get_parameters() []Parameter {
+	mut parameters := []Parameter{}
+
+	for parameter in operation.parameters {
+		if parameter is Parameter {
+			parameters << Parameter{...parameter}
+		}
+	}
+
+	return parameters
+}
+
+pub struct ExternalDocumentation {
 pub mut:
 	description string
 	url         string
