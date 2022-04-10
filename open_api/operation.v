@@ -86,11 +86,22 @@ pub fn (operation Operation) get_parameters() []Parameter {
 
 	for parameter in operation.parameters {
 		if parameter is Parameter {
-			parameters << Parameter{...parameter}
+			parameters << Parameter{
+				...parameter
+			}
 		}
 	}
 
 	return parameters
+}
+
+pub fn (operation Operation) get_request_body() RequestBody {
+	if operation.request_body is RequestBody {
+		return RequestBody{
+			...operation.request_body
+		}
+	}
+	return RequestBody{}
 }
 
 pub struct ExternalDocumentation {

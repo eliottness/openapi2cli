@@ -1,7 +1,6 @@
 module main
 
 import cli
-import open_api
 import os
 import x.json2 { Any }
 
@@ -20,6 +19,7 @@ fn main() {
         execute: print_help_for_command
     }
 	mut cmd := cli.Command{}
+	mut content := []string{}
 @for path, path_item in api.paths
 	@for method, operation in path_item.operations
 	if "@operation.operation_id" != "" {
@@ -36,6 +36,24 @@ fn main() {
 			})
 		}
 		@end
+		content = @operation.get_request_body().content.keys()
+		if 'application/json' in content {
+			cmd.add_flags([
+				cli.Flag{
+					flag: cli.FlagType.string
+					name: 'body_file'
+				},
+				cli.Flag{
+					flag: cli.FlagType.bool
+					name: 'body_stdin'
+				},
+				cli.Flag{
+					flag: cli.FlagType.string
+					name: 'body'
+				}
+			])
+		}
+
     	cmd.execute = fn (cmd cli.Command) ? {
 			execute_command("@method", cmd) ?
 		}
