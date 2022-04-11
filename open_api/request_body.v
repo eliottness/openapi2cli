@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 import json
 
-struct RequestBody {
+pub struct RequestBody {
 pub mut:
 	description string
 	content     map[string]MediaType

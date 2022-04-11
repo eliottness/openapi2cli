@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 import json
 
-struct Header {
+pub struct Header {
 	Parameter
 }
 

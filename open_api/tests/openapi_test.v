@@ -1,7 +1,7 @@
 import open_api
 import yaml
 import os
-import cli
+import cli_builder { build }
 
 fn test_basic_open_api_struct() ? {
 	content := os.read_file(@VMODROOT + '/open_api/testdata/open_api_basic.json') ?
@@ -43,5 +43,5 @@ fn test_open_api_struct_without_openapi() ? {
 }
 
 fn test_full_open_api_struct() ? {
-	cli.build(@VMODROOT + '/open_api/testdata/open_api_complex.yaml', false) ?
+	build(@VMODROOT + '/open_api/testdata/open_api_complex.yaml', false) ?
 }

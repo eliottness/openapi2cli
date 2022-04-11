@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 import json
 
-struct Link {
+pub struct Link {
 pub mut:
 	operation_ref string
 	operation_id  string

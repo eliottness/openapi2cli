@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 import json
 
-struct PathItem {
+pub struct PathItem {
 pub mut:
 	ref         string
 	summary     string
@@ -18,6 +18,7 @@ pub mut:
 	trace       Operation
 	servers     []Server
 	parameters  []ObjectRef<Parameter>
+	operations  map[string]Operation
 }
 
 pub fn (mut path_item PathItem) from_json(json Any) ? {
@@ -35,27 +36,35 @@ pub fn (mut path_item PathItem) from_json(json Any) ? {
 			}
 			'get' {
 				path_item.get = decode<Operation>(value.json_str()) ?
+				path_item.operations['GET'] = path_item.get
 			}
 			'put' {
 				path_item.put = decode<Operation>(value.json_str()) ?
+				path_item.operations['PUT'] = path_item.put
 			}
 			'post' {
 				path_item.post = decode<Operation>(value.json_str()) ?
+				path_item.operations['POST'] = path_item.post
 			}
 			'delete' {
 				path_item.delete = decode<Operation>(value.json_str()) ?
+				path_item.operations['DELETE'] = path_item.delete
 			}
 			'options' {
 				path_item.options = decode<Operation>(value.json_str()) ?
+				path_item.operations['OPTIONS'] = path_item.options
 			}
 			'head' {
 				path_item.head = decode<Operation>(value.json_str()) ?
+				path_item.operations['HEAD'] = path_item.head
 			}
 			'patch' {
 				path_item.patch = decode<Operation>(value.json_str()) ?
+				path_item.operations['PATCH'] = path_item.patch
 			}
 			'trace' {
 				path_item.trace = decode<Operation>(value.json_str()) ?
+				path_item.operations['TRACE'] = path_item.trace
 			}
 			'servers' {
 				path_item.servers = decode_array<Server>(value.json_str()) ?
@@ -85,7 +94,7 @@ fn (mut path_item PathItem) validate(object map[string]Any) ? {
 
 // ---------------------------------------- //
 
-type Paths = map[string]PathItem
+pub type Paths = map[string]PathItem
 
 fn clean_path_expression(path string) string {
 	mut path_copy := path.clone()

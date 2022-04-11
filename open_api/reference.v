@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any, raw_decode }
 import json
 
-struct Reference {
+pub struct Reference {
 pub mut:
 	ref string
 }
@@ -24,7 +24,7 @@ pub fn (mut reference Reference) from_json(json Any) ? {
 
 // ---------------------------------------- //
 
-type ObjectRef<T> = Reference | T
+pub type ObjectRef<T> = Reference | T
 
 pub fn from_json<T>(json Any) ?ObjectRef<T> {
 	if tmp := decode<Reference>(json.json_str()) {

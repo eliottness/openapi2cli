@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 import json
 
-type Responses = map[string]ObjectRef<Response>
+pub type Responses = map[string]ObjectRef<Response>
 
 pub fn (mut responses Responses) from_json(json Any) ? {
 	if json.str() == '' {
@@ -23,7 +23,7 @@ pub fn (mut responses Responses) from_json(json Any) ? {
 
 // ---------------------------------------- //
 
-struct Response {
+pub struct Response {
 pub mut:
 	description string
 	headers     map[string]ObjectRef<Header>

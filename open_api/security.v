@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 import json
 
-type SecurityRequirement = map[string][]string
+pub type SecurityRequirement = map[string][]string
 
 pub fn (mut requirement SecurityRequirement) from_json(json Any) ? {
 	mut tmp := map[string][]string{}
@@ -16,7 +16,7 @@ pub fn (mut requirement SecurityRequirement) from_json(json Any) ? {
 
 // ---------------------------------------- //
 
-struct SecurityScheme {
+pub struct SecurityScheme {
 pub mut:
 	security_type       string
 	location            string
@@ -92,7 +92,7 @@ fn (mut security_scheme SecurityScheme) validate(object map[string]Any) ? {
 
 // ---------------------------------------- //
 
-struct OAuthFlows {
+pub struct OAuthFlows {
 pub mut:
 	client_credentials OAuthFlow
 	authorization_code OAuthFlow
@@ -126,7 +126,7 @@ pub fn (mut flows OAuthFlows) from_json(json Any) ? {
 
 // ---------------------------------------- //
 
-struct OAuthFlow {
+pub struct OAuthFlow {
 pub mut:
 	authorization_url string
 	token_url         string

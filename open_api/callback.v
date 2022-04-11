@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 import json
 
-type Callback = map[string]PathItem
+pub type Callback = map[string]PathItem
 
 pub fn (mut callback Callback) from_json(json Any) ? {
 	mut tmp := map[string]PathItem{}

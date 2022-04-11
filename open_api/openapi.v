@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 import json
 
-struct OpenApi {
+pub struct OpenApi {
 pub mut:
 	openapi       string
 	info          Info
@@ -47,5 +47,13 @@ pub fn (mut open_api OpenApi) from_json(json Any) ? {
 			}
 			else {}
 		}
+	}
+
+	open_api.validate() ?
+}
+
+fn (open_api OpenApi) validate() ? {
+	if !open_api.openapi.starts_with('3') {
+		return error('Failed OpenApi decoding: can only decode OpenAPi version 3')
 	}
 }

@@ -3,7 +3,7 @@ module open_api
 import x.json2 { Any }
 import json
 
-struct Tag {
+pub struct Tag {
 pub mut:
 	name          string
 	external_docs ExternalDocumentation
