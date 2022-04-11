@@ -16,5 +16,5 @@ fn test_path_item_operations_map() ? {
 	content := os.read_file(@VMODROOT + '/open_api/testdata/path_item.json') ?
 	path_item := open_api.decode<open_api.PathItem>(content) ?
 
-	assert path_item.operations.keys() == ['GET']
+	assert path_item.get_operations().keys() == ['GET']
 }
