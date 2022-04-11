@@ -26,7 +26,6 @@ fn main() {
 
 	mut cmd := cli.Command{}
 	mut cmds := []cli.Command{}
-	mut content_types := []string{}
 @for path, path_item in api.paths
 	@for method, operation in path_item.get_operations()
 	// -------------- New Command -------------- //
@@ -39,18 +38,18 @@ fn main() {
 										@operation.get_request_body().content.keys(), cmd) ?
 		}
     }
-
-	cmds << cmd
-
-	content_types = @operation.get_request_body().content.keys()
-	if content_types.len > 0 {
-        add_flag(mut cmd, cli.FlagType.string, 'body', false)
-	}
+	@if operation.get_request_body().content.keys().len > 0
+    add_flag(mut cmd, cli.FlagType.string, 'body', false)
+	@end
 	@for parameter in operation.get_path_parameters()
 	add_flag(mut cmd, cli.FlagType.string, '@parameter.name', @parameter.required)
 	@end
+	cmds << cmd
 	@end
 @end
+
+	// ----------------------------------------- //
+
     app.add_commands(cmds)
     app.setup()
     app.parse(os.args)
