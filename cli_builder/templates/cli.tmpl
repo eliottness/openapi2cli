@@ -5,8 +5,12 @@ import net.http
 import os
 import x.json2 { Any }
 
-fn print_help_for_command(cmd cli.Command) ? {
-	println('Here is a help message that help')
+fn get_fetch_config(method string, url string, data string) http.Request {
+	return http.FetchConfig{
+		method: http.method_from_str(method)
+		url: url
+		data: data
+	}
 }
 
 fn execute_command(method string, path string, cmd cli.Command) ? {
@@ -43,24 +47,8 @@ fn execute_command(method string, path string, cmd cli.Command) ? {
 		data = os.read_file(data) ?
 	}
 
-	mut response := http.Response{}
-	match method {
-		'GET' 	  { response = http.get(url) ? }
-		'HEAD'    { response = http.head(url) ? }
-		'DELETE'  { response = http.delete(url) ? }
-		'PUT'     { response = http.put(url, data) ? }
-		'POST'    { response = http.post(url, data) ? }
-		'PATCH'   { response = http.patch(url, data) ? }
-		'OPTIONS', 'TRACE' {
-			println('Error: ' + method + ' method not supported for now.')
-			return
-		}
-		else {
-			println('Error: Unknown request method.')
-			return
-		}
-	}
-
+	mut config := get_fetch_config(method, url, data)	
+	response := http.fetch(config) ?
 	println(response.text)
 }
 
@@ -83,7 +71,10 @@ fn main() {
     mut app := cli.Command{
         name: "@api.info.title"
         description: "@api.info.description"
-        execute: print_help_for_command
+        execute: fn (cmd cli.Command) ? {
+			println(cmd.help_message())
+			return
+		}
     }
 	mut cmd := cli.Command{}
 @for path, path_item in api.paths
