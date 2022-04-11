@@ -36,35 +36,27 @@ pub fn (mut path_item PathItem) from_json(json Any) ? {
 			}
 			'get' {
 				path_item.get = decode<Operation>(value.json_str()) ?
-				path_item.operations['GET'] = path_item.get
 			}
 			'put' {
 				path_item.put = decode<Operation>(value.json_str()) ?
-				path_item.operations['PUT'] = path_item.put
 			}
 			'post' {
 				path_item.post = decode<Operation>(value.json_str()) ?
-				path_item.operations['POST'] = path_item.post
 			}
 			'delete' {
 				path_item.delete = decode<Operation>(value.json_str()) ?
-				path_item.operations['DELETE'] = path_item.delete
 			}
 			'options' {
 				path_item.options = decode<Operation>(value.json_str()) ?
-				path_item.operations['OPTIONS'] = path_item.options
 			}
 			'head' {
 				path_item.head = decode<Operation>(value.json_str()) ?
-				path_item.operations['HEAD'] = path_item.head
 			}
 			'patch' {
 				path_item.patch = decode<Operation>(value.json_str()) ?
-				path_item.operations['PATCH'] = path_item.patch
 			}
 			'trace' {
 				path_item.trace = decode<Operation>(value.json_str()) ?
-				path_item.operations['TRACE'] = path_item.trace
 			}
 			'servers' {
 				path_item.servers = decode_array<Server>(value.json_str()) ?
@@ -90,6 +82,29 @@ fn (mut path_item PathItem) validate(object map[string]Any) ? {
 		}
 		checked[param.name] = param.location
 	}
+}
+
+pub fn (path_item PathItem) get_operations() map[string]Operation {
+	mut operations := map[string]Operation{}
+
+	$for field in PathItem.fields {
+		$if field.typ is Operation {
+			if path_item.$(field.name).operation_id != '' {
+				match field.name {
+					'get' { operations[field.name.to_upper()] = path_item.get }
+					'put' { operations[field.name.to_upper()] = path_item.put }
+					'post' { operations[field.name.to_upper()] = path_item.post }
+					'head' { operations[field.name.to_upper()] = path_item.head }
+					'trace' { operations[field.name.to_upper()] = path_item.trace }
+					'patch' { operations[field.name.to_upper()] = path_item.patch }
+					'delete' { operations[field.name.to_upper()] = path_item.delete }
+					'options' { operations[field.name.to_upper()] = path_item.options }
+					else {}
+				}
+			}
+		}
+	}
+	return operations
 }
 
 // ---------------------------------------- //

@@ -81,13 +81,16 @@ fn (mut operation Operation) validate(object map[string]Any) ? {
 	}
 }
 
-pub fn (operation Operation) get_parameters() []Parameter {
+pub fn (operation Operation) get_path_parameters() []Parameter {
 	mut parameters := []Parameter{}
 
 	for parameter in operation.parameters {
 		if parameter is Parameter {
-			parameters << Parameter{
+			param := Parameter{
 				...parameter
+			}
+			if param.location == 'path' {
+				parameters << param
 			}
 		}
 	}
