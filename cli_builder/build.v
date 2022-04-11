@@ -14,12 +14,10 @@ pub fn build(path string, debug bool) ?string {
 	content = escape_escaped_char(content) ?
 	raw_json := yaml.yaml_to_json(content, replace_tags: true, debug: int(debug)) ?
 	open_api := open_api.decode<open_api.OpenApi>(raw_json) ?
-	assert open_api.servers.len == 1
+	assert open_api.servers.len == 1 // Todo: properly handle this case
 
 	file_path := @VMODROOT + '/templated.v'
 	mut program := render(open_api)
-	program = program.replace('open, api', 'open_api') // The module name is fucked when formatting
-	program = program.replace('example: \n', 'example: Any("")\n') // When formatting, no default value is given to json2.Any type
 	os.write_file(file_path, program) ?
 	return file_path
 }

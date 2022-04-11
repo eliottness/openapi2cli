@@ -31,7 +31,7 @@ fn get_fetch_config(method string, url string, data string) http.FetchConfig {
 	}
 }
 
-pub fn execute_command(method string, path string, cmd cli.Command) ? {
+pub fn execute_command(method string, path string, content_types []string, cmd cli.Command) ? {
 	flags := cmd.flags.get_all_found()
 	flags_name := flags.map(fn (elt cli.Flag) string {
 		return elt.name
