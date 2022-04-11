@@ -1,6 +1,6 @@
 module cli_builder
 
-import cli
+import cli { Command }
 import net.http
 import os
 import regex
@@ -40,15 +40,22 @@ fn get_stdin_input() ?string {
 	return input
 }
 
-pub fn execute_command(method string, path string, content_types []string, cmd cli.Command) ? {
-	mut data := ''
+pub fn execute_command(method string, path string, content_types []string, cmd Command) ? {
 	mut url := path
+	mut data := ''
+	mut headers := []string{}
 
 	for flag in cmd.flags.get_all_found() {
-		if flag.name != 'body' {
-			url = url.replace('{' + flag.name + '}', flag.get_string() ?)
-		} else {
-			data = flag.get_string() ?
+		match flag.name {
+			'body' {
+				data = flag.get_string() ?
+			}
+			'header' {
+				headers = flag.get_strings() ?
+			}
+			else {
+				url = url.replace('{' + flag.name + '}', flag.get_string() ?)
+			}
 		}
 	}
 
@@ -62,6 +69,15 @@ pub fn execute_command(method string, path string, content_types []string, cmd c
 
 	if method in ['POST', 'PUT', 'PATCH'] {
 		config.header.add(http.CommonHeader.content_type, 'text/plain')
+	}
+
+	for header in headers {
+		elements := header.split(':')
+		if elements.len < 2 {
+			println('Error: Wrong header format')
+			return
+		}
+		config.header.add_custom(elements[0], elements[1]) ?
 	}
 
 	response := http.fetch(config) ?

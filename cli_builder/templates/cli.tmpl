@@ -5,9 +5,9 @@ import cli_builder
 import os
 import x.json2 { Any }
 
-fn add_flag(mut cmd cli.Command, name string, required bool) {
+fn add_flag(mut cmd cli.Command, flag_type cli.FlagType, name string, abbrev string, required bool) {
 	cmd.add_flag(cli.Flag{
-		flag: cli.FlagType.string
+		flag: flag_type
 		name: name
 		required: required
 	})
@@ -38,11 +38,13 @@ fn main() {
 										@operation.get_request_body().content.keys(), cmd) ?
 		}
     }
+
+    add_flag(mut cmd, cli.FlagType.string_array, 'header', 'H', false)
 	@if operation.get_request_body().content.keys().len > 0
-    add_flag(mut cmd, 'body', true)
+    add_flag(mut cmd, cli.FlagType.string, 'body', 'b', true)
 	@end
 	@for parameter in operation.get_path_parameters()
-	add_flag(mut cmd, '@parameter.name', @parameter.required)
+	add_flag(mut cmd, cli.FlagType.string, '@parameter.name', '', @parameter.required)
 	@end
 	cmds << cmd
 	@end
