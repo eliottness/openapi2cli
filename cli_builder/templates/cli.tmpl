@@ -1,0 +1,62 @@
+module main
+
+import cli
+import cli_builder
+import net.http
+import os
+import x.json2 { Any }
+
+fn add_body_flags(mut cmd cli.Command, content []string) {
+	if 'application/json' in content || 'application/xml' in content {
+		cmd.add_flags([
+			cli.Flag{
+				flag: cli.FlagType.bool
+				name: 'body_stdin'
+			},
+			cli.Flag{
+				flag: cli.FlagType.string
+				name: 'body'
+			}
+		])
+	}
+}
+
+fn main() {
+    mut app := cli.Command{
+        name: "@api.info.title"
+        description: "@api.info.description"
+        execute: fn (cmd cli.Command) ? {
+			println(cmd.help_message())
+			return
+		}
+    }
+	mut cmd := cli.Command{}
+@for path, path_item in api.paths
+	@for method, operation in path_item.operations
+	if "@operation.operation_id" != "" {
+    	cmd = cli.Command{
+    	    name: "@operation.operation_id"
+			description: "@operation.description"
+    	}
+		@for parameter in operation.get_parameters()
+		if '@parameter.location' == 'path' {
+			cmd.add_flag(cli.Flag{
+				flag: cli.FlagType.string
+				name: '@parameter.name'
+				required: @parameter.required
+			})
+		}
+		@end
+		add_body_flags(mut cmd, @operation.get_request_body().content.keys())
+
+    	cmd.execute = fn (cmd cli.Command) ? {
+			cli_builder.execute_command("@method", "@{api.servers[0].url}" + "@path", cmd) ?
+		}
+    	app.add_command(cmd)
+	}
+	@end
+@end
+
+    app.setup()
+    app.parse(os.args)
+}
