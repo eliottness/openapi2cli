@@ -1,6 +1,7 @@
 module cli_builder
 
 import cli { Command }
+import encoding.base64
 import net.http
 import os
 import regex
@@ -43,6 +44,7 @@ fn get_stdin_input() ?string {
 pub fn execute_command(method string, path string, content_types []string, cmd Command) ? {
 	mut url := path
 	mut data := ''
+	mut auth := ''
 	mut headers := []string{}
 
 	for flag in cmd.flags.get_all_found() {
@@ -52,6 +54,9 @@ pub fn execute_command(method string, path string, content_types []string, cmd C
 			}
 			'header' {
 				headers = flag.get_strings() ?
+			}
+			'auth' {
+				auth = flag.get_string() ?
 			}
 			else {
 				url = url.replace('{' + flag.name + '}', flag.get_string() ?)
@@ -69,6 +74,10 @@ pub fn execute_command(method string, path string, content_types []string, cmd C
 
 	if method in ['POST', 'PUT', 'PATCH'] {
 		config.header.add(http.CommonHeader.content_type, 'text/plain')
+	}
+
+	if auth != '' {
+		config.header.add(http.CommonHeader.authorization, 'Basic ' + base64.encode_str(auth))
 	}
 
 	for header in headers {
