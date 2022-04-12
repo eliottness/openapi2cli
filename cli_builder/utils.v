@@ -77,7 +77,7 @@ pub fn execute_command(method string, path string, content_types []string, cmd C
 	}
 
 	if auth != '' {
-		config.header.add_custom('Authorization', 'Basic ' + base64.encode_str(auth)) ?
+		config.header.add(http.CommonHeader.authorization, 'Basic ' + base64.encode_str(auth))
 	}
 
 	for header in headers {

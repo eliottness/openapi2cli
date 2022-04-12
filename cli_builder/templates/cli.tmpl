@@ -9,6 +9,7 @@ fn add_flag(mut cmd cli.Command, flag_type cli.FlagType, name string, abbrev str
 	cmd.add_flag(cli.Flag{
 		flag: flag_type
 		name: name
+		abbrev: abbrev
 		required: required
 	})
 }
