@@ -24,11 +24,12 @@ fn escape_escaped_char(str string) ?string {
 
 // ------------ Template utils ------------ //
 
-fn get_fetch_config(method string, url string, data string) http.FetchConfig {
+fn get_fetch_config(method string, url string, data string, header http.Header) http.FetchConfig {
 	return http.FetchConfig{
 		method: http.method_from_str(method)
 		url: url
 		data: data
+		header: header
 	}
 }
 
@@ -44,19 +45,31 @@ fn get_stdin_input() ?string {
 pub fn execute_command(method string, path string, content_types []string, cmd Command) ? {
 	mut url := path
 	mut data := ''
-	mut auth := ''
-	mut headers := []string{}
+	mut header := http.new_header(http.HeaderConfig{})
 
 	for flag in cmd.flags.get_all_found() {
 		match flag.name {
 			'body' {
 				data = flag.get_string() ?
+				if data == '-' {
+					data = get_stdin_input() ?
+				} else if os.is_file(data) {
+					data = os.read_file(data) ?
+				}
 			}
 			'header' {
-				headers = flag.get_strings() ?
+				for h in flag.get_strings() ? {
+					tmp := h.split(':')
+					if tmp.len < 2 {
+						println('Error: Wrong header format.')
+						return
+					}
+					header.add_custom(tmp[0], tmp[1]) ?
+				}
 			}
 			'auth' {
-				auth = flag.get_string() ?
+				auth := flag.get_string() ?
+				header.add_custom('Authorization', 'Basic ' + base64.encode_str(auth)) ?
 			}
 			else {
 				url = url.replace('{' + flag.name + '}', flag.get_string() ?)
@@ -64,29 +77,10 @@ pub fn execute_command(method string, path string, content_types []string, cmd C
 		}
 	}
 
-	if data == '-' {
-		data = get_stdin_input() ?
-	} else if os.is_file(data) {
-		data = os.read_file(data) ?
-	}
-
-	mut config := get_fetch_config(method, url, data)
+	mut config := get_fetch_config(method, url, data, header)
 
 	if method in ['POST', 'PUT', 'PATCH'] {
 		config.header.add(http.CommonHeader.content_type, 'text/plain')
-	}
-
-	if auth != '' {
-		config.header.add(http.CommonHeader.authorization, 'Basic ' + base64.encode_str(auth))
-	}
-
-	for header in headers {
-		elements := header.split(':')
-		if elements.len < 2 {
-			println('Error: Wrong header format')
-			return
-		}
-		config.header.add_custom(elements[0], elements[1]) ?
 	}
 
 	response := http.fetch(config) ?
