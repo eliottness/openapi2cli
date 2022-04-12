@@ -76,3 +76,20 @@ fn (mut components Components) validate() ? {
 	check_keys(components.links.keys()) ?
 	check_keys(components.callbacks.keys()) ?
 }
+
+pub fn (components Components) get_basic_http_schemes() []string {
+	mut keys := []string{}
+
+	for key, value in components.security_schemes {
+		if value is SecurityScheme {
+			tmp := SecurityScheme{
+				...value
+			}
+			if tmp.security_type.to_lower() == 'http' && tmp.scheme.to_lower() == 'basic' {
+				keys << key
+			}
+		}
+	}
+
+	return keys
+}

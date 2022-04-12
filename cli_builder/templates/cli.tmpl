@@ -51,7 +51,7 @@ fn main() {
 
 	for mut command in cmds {
     	add_flag(mut command, cli.FlagType.string_array, 'header', 'H', false)
-    	add_flag(mut command, cli.FlagType.string, 'auth', 'u', false)
+    	add_flag(mut command, cli.FlagType.string, 'auth', 'u', @required)
 	}
 
     app.add_commands(cmds)

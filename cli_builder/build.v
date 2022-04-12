@@ -4,7 +4,19 @@ import os
 import open_api
 import yaml
 
+fn is_basic_http_required(open_api open_api.OpenApi) bool {
+	security_schemes := open_api.components.get_basic_http_schemes()
+	mut required := false
+	for requirement in open_api.security {
+		for key, _ in requirement {
+			required = required || key in security_schemes
+		}
+	}
+	return required
+}
+
 fn render(open_api open_api.OpenApi) string {
+	required := is_basic_http_required(open_api)
 	api := open_api
 	return $tmpl('templates/cli.tmpl')
 }
