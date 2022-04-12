@@ -742,3 +742,10 @@ components:
         tagTime:
           format: date-time
           type: string
+  securitySchemes:
+    http:
+      type: http
+      scheme: basic
+security:
+  - http:
+    - {}
