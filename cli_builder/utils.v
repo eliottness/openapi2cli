@@ -45,6 +45,7 @@ fn get_stdin_input() ?string {
 pub fn execute_command(method string, path string, content_types []string, cmd Command) ? {
 	mut url := path
 	mut data := ''
+	mut output := ''
 	mut header := http.new_header(http.HeaderConfig{})
 
 	for flag in cmd.flags.get_all_found() {
@@ -71,6 +72,13 @@ pub fn execute_command(method string, path string, content_types []string, cmd C
 				auth := flag.get_string() ?
 				header.add_custom('authorization', 'Basic ' + base64.encode_str(auth)) ?
 			}
+			'output' {
+				output = flag.get_string() ?
+				if os.exists(output) {
+					println('Error: Output file already exists.')
+					return
+				}
+			}
 			else {
 				url = url.replace('{' + flag.name + '}', flag.get_string() ?)
 			}
@@ -92,5 +100,10 @@ pub fn execute_command(method string, path string, content_types []string, cmd C
 
 	config := get_fetch_config(method, url, data, header)
 	response := http.fetch(config) ?
-	println(response.text)
+
+	if output != '' {
+		os.write_file(output, response.text) ?
+	} else {
+		println(response.text)
+	}
 }
