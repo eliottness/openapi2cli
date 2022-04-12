@@ -53,6 +53,7 @@ fn main() {
     	add_flag(mut command, cli.FlagType.string_array, 'header', 'H', false)
     	add_flag(mut command, cli.FlagType.string, 'auth', 'u', @required)
     	add_flag(mut command, cli.FlagType.string, 'output', 'o', false)
+    	add_flag(mut command, cli.FlagType.bool, 'location', 'l', false)
 	}
 
     app.add_commands(cmds)

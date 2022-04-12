@@ -5,6 +5,7 @@ import encoding.base64
 import net.http
 import os
 import regex
+import term
 
 fn escape_escaped_char(str string) ?string {
 	mut tmp := str.clone()
@@ -24,12 +25,13 @@ fn escape_escaped_char(str string) ?string {
 
 // ------------ Template utils ------------ //
 
-fn get_fetch_config(method string, url string, data string, header http.Header) http.FetchConfig {
+fn get_fetch_config(method string, url string, data string, header http.Header, redirect bool) http.FetchConfig {
 	return http.FetchConfig{
 		method: http.method_from_str(method)
 		url: url
 		data: data
 		header: header
+		allow_redirect: redirect
 	}
 }
 
@@ -46,6 +48,7 @@ pub fn execute_command(method string, path string, content_types []string, cmd C
 	mut url := path
 	mut data := ''
 	mut output := ''
+	mut location := false
 	mut header := http.new_header(http.HeaderConfig{})
 
 	for flag in cmd.flags.get_all_found() {
@@ -79,6 +82,9 @@ pub fn execute_command(method string, path string, content_types []string, cmd C
 					return
 				}
 			}
+			'location' {
+				location = flag.get_bool() ?
+			}
 			else {
 				url = url.replace('{' + flag.name + '}', flag.get_string() ?)
 			}
@@ -98,8 +104,13 @@ pub fn execute_command(method string, path string, content_types []string, cmd C
 		header.add_custom('content_type', values[0]) ?
 	}
 
-	config := get_fetch_config(method, url, data, header)
+	config := get_fetch_config(method, url, data, header, location)
 	response := http.fetch(config) ?
+	status_code := response.status().int()
+
+	if 300 <= status_code && status_code < 400 {
+		eprintln(term.warn_message('Warning: You received a redirection status_code, to enable redirection add the -l flag.'))
+	}
 
 	if output != '' {
 		os.write_file(output, response.text) ?
