@@ -5,12 +5,13 @@ import cli_builder
 import os
 import x.json2 { Any }
 
-fn add_flag(mut cmd cli.Command, flag_type cli.FlagType, name string, abbrev string, required bool) {
+fn add_flag(mut cmd cli.Command, flag_type cli.FlagType, name string, abbrev string, required bool, description string) {
 	cmd.add_flag(cli.Flag{
 		flag: flag_type
 		name: name
 		abbrev: abbrev
 		required: required
+		description: description
 	})
 }
 
@@ -39,10 +40,10 @@ fn main() {
 		}
     }
 	@if operation.get_request_body().content.keys().len > 0
-    add_flag(mut cmds[cmds.len - 1], cli.FlagType.string, 'body', 'b', true)
+    add_flag(mut cmds[cmds.len - 1], cli.FlagType.string, 'body', 'b', true, "Specify the Request body: '-' allow to read stdin, you can also specify a file to read or a valid body directly")
 	@end
 	@for parameter in operation.get_path_parameters()
-	add_flag(mut cmds[cmds.len - 1], cli.FlagType.string, '@parameter.name', '', @parameter.required)
+	add_flag(mut cmds[cmds.len - 1], cli.FlagType.string, '@parameter.name', '', @parameter.required, "Specify the @parameter.name url parameter")
 	@end
 	@end
 @end
@@ -50,11 +51,11 @@ fn main() {
 	// ----------------------------------------- //
 
 	for mut command in cmds {
-    	add_flag(mut command, cli.FlagType.string_array, 'header', 'H', false)
-    	add_flag(mut command, cli.FlagType.string, 'auth', 'u', @required)
-    	add_flag(mut command, cli.FlagType.string, 'output', 'o', false)
-    	add_flag(mut command, cli.FlagType.bool, 'location', 'l', false)
-    	add_flag(mut command, cli.FlagType.bool, 'fail', 'f', false)
+    	add_flag(mut command, cli.FlagType.string_array, 'header', 'H', false, 'Add one or multiple headers to the Request. (you can use this multiple times)')
+    	add_flag(mut command, cli.FlagType.string, 'auth', 'u', @required, 'Specify your non-encoded http basic token for authentification.')
+    	add_flag(mut command, cli.FlagType.string, 'output', 'o', false, 'Specify the file where you want to write the Response. (Write in stdout by default)')
+    	add_flag(mut command, cli.FlagType.bool, 'location', 'l', false, 'Allow Request redirection. (False by default)')
+    	add_flag(mut command, cli.FlagType.bool, 'fail', 'f', false, 'Allow the program to return a non-zero return code in case of a 40X status code.')
 	}
 
     app.add_commands(cmds)
