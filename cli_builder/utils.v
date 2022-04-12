@@ -48,6 +48,7 @@ pub fn execute_command(method string, path string, content_types []string, cmd C
 	mut url := path
 	mut data := ''
 	mut output := ''
+	mut fail := false
 	mut location := false
 	mut header := http.new_header(http.HeaderConfig{})
 
@@ -85,6 +86,9 @@ pub fn execute_command(method string, path string, content_types []string, cmd C
 			'location' {
 				location = flag.get_bool() ?
 			}
+			'fail' {
+				fail = flag.get_bool() ?
+			}
 			else {
 				url = url.replace('{' + flag.name + '}', flag.get_string() ?)
 			}
@@ -116,5 +120,12 @@ pub fn execute_command(method string, path string, content_types []string, cmd C
 		os.write_file(output, response.text) ?
 	} else {
 		println(response.text)
+	}
+
+	if fail {
+		if status_code >= 400 {
+			eprintln('Error: Received $status_code status code.')
+		}
+		exit(1)
 	}
 }
