@@ -24,13 +24,12 @@ fn main() {
 		}
     }
 
-	mut cmd := cli.Command{}
 	mut cmds := []cli.Command{}
 @for path, path_item in api.paths
 	@for method, operation in path_item.get_operations()
 	// -------------- New Command -------------- //
 
-    cmd = cli.Command{
+    cmds << cli.Command{
         name: "@operation.operation_id"
 		description: "@operation.description"
 		execute: fn (cmd cli.Command) ? {
@@ -38,19 +37,21 @@ fn main() {
 										@operation.get_request_body().content.keys(), cmd) ?
 		}
     }
-
-    add_flag(mut cmd, cli.FlagType.string_array, 'header', 'H', false)
 	@if operation.get_request_body().content.keys().len > 0
-    add_flag(mut cmd, cli.FlagType.string, 'body', 'b', true)
+    add_flag(mut cmds[cmds.len - 1], cli.FlagType.string, 'body', 'b', true)
 	@end
 	@for parameter in operation.get_path_parameters()
-	add_flag(mut cmd, cli.FlagType.string, '@parameter.name', '', @parameter.required)
+	add_flag(mut cmds[cmds.len - 1], cli.FlagType.string, '@parameter.name', '', @parameter.required)
 	@end
-	cmds << cmd
 	@end
 @end
 
 	// ----------------------------------------- //
+
+	for mut command in cmds {
+    	add_flag(mut command, cli.FlagType.string_array, 'header', 'H', false)
+    	add_flag(mut command, cli.FlagType.string, 'auth', 'u', false)
+	}
 
     app.add_commands(cmds)
     app.setup()
