@@ -64,12 +64,12 @@ pub fn execute_command(method string, path string, content_types []string, cmd C
 						println('Error: Wrong header format.')
 						return
 					}
-					header.add_custom(tmp[0], tmp[1]) ?
+					header.add_custom(tmp[0].to_lower(), tmp[1]) ?
 				}
 			}
 			'auth' {
 				auth := flag.get_string() ?
-				header.add_custom('Authorization', 'Basic ' + base64.encode_str(auth)) ?
+				header.add_custom('authorization', 'Basic ' + base64.encode_str(auth)) ?
 			}
 			else {
 				url = url.replace('{' + flag.name + '}', flag.get_string() ?)
@@ -77,12 +77,20 @@ pub fn execute_command(method string, path string, content_types []string, cmd C
 		}
 	}
 
-	mut config := get_fetch_config(method, url, data, header)
-
-	if method in ['POST', 'PUT', 'PATCH'] {
-		config.header.add(http.CommonHeader.content_type, 'text/plain')
+	if content_types.len == 1 {
+		header.add_custom('content_type', content_types.first()) ?
 	}
 
+	if content_types.len > 1 {
+		values := header.custom_values('content-type', http.HeaderQueryConfig{true})
+		if values.len != 1 || values[0] !in content_types {
+			println('You must specify the content-type header once with one of these values: $content_types')
+			return
+		}
+		header.add_custom('content_type', values[0]) ?
+	}
+
+	config := get_fetch_config(method, url, data, header)
 	response := http.fetch(config) ?
 	println(response.text)
 }
