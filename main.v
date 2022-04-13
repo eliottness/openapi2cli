@@ -23,9 +23,5 @@ fn main() {
 
 	yaml_filepath := args[0] ?
 	v_filepath := cli_builder.build(yaml_filepath, debug) ?
-	os.execute('v $v_filepath -o $binary_name ')
-
-	if !debug {
-		os.rm(v_filepath) ?
-	}
+	os.execvp('v', [v_filepath, '-o', binary_name]) ?
 }
