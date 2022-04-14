@@ -40,7 +40,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v4
+
+      - name: Checkout ${{ github.event.repository.name }}
+        uses: actions/checkout@v2
+    
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@v4
         with:
