@@ -34,18 +34,3 @@ jobs:
 
       - name: Run Tests
         run: v test .
-  
-  docker:
-    
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout ${{ github.event.repository.name }}
-        uses: actions/checkout@master
-      
-      - name: Kaniko build
-        uses: aevea/action-kaniko@master
-        with:
-          image: alexandrerulleau/openapi2cli
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
