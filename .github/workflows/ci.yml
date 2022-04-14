@@ -34,3 +34,17 @@ jobs:
 
       - name: Run Tests
         run: v test .
+  
+  docker-build:
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish to Registry
+        uses: elgohr/Publish-Docker-Github-Action@v4
+        with:
+          name: openapi2cli
+          username: ${{ alexandrerulleau }}
+          password: ${{ Doomhammer19 }}
+
