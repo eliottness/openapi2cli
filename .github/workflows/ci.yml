@@ -47,5 +47,5 @@ jobs:
         uses: aevea/action-kaniko@master
         with:
           image: openapi2cli
-          username: 'alexandrerulleau'
-          password: 'Doomhammer19'
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
