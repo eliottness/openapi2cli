@@ -45,6 +45,6 @@ jobs:
         uses: elgohr/Publish-Docker-Github-Action@v4
         with:
           name: openapi2cli
-          username: ${{ alexandrerulleau }}
-          password: ${{ Doomhammer19 }}
+          username: 'alexandrerulleau'
+          password: 'Doomhammer19'
 
