@@ -1,8 +1,4 @@
-import cli_builder
-import open_api
-import yaml
-import os
-import regex
+module cli_builder
 
 fn render(str string) string {
 	name := str

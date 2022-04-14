@@ -1,5 +1,4 @@
 import open_api
-import yaml
 import os
 import cli_builder { build }
 

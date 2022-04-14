@@ -4,6 +4,7 @@ import cli { Command, Flag, FlagType }
 import encoding.base64
 import net.http
 import os
+import prettyprint as pp
 import term
 import x.json2 { Any }
 
@@ -104,6 +105,8 @@ pub fn execute_command(method string, path string, content_types []string, cmd C
 
 	if output != '' {
 		os.write_file(output, response.text) ?
+	} else if response.header.get(http.CommonHeader.content_type) ? == 'application/json' {
+		println(pp.pretty(response.text))
 	} else {
 		println(response.text)
 	}
