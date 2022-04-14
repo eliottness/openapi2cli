@@ -35,19 +35,17 @@ jobs:
       - name: Run Tests
         run: v test .
   
-  docker-build:
+  docker:
     
     runs-on: ubuntu-latest
     
     steps:
-
       - name: Checkout ${{ github.event.repository.name }}
-        uses: actions/checkout@v2
-    
-      - name: Publish to Registry
-        uses: elgohr/Publish-Docker-Github-Action@v4
+        uses: actions/checkout@master
+      
+      - name: Kaniko build
+        uses: aevea/action-kaniko@master
         with:
-          name: openapi2cli
+          image: openapi2cli
           username: 'alexandrerulleau'
           password: 'Doomhammer19'
-
