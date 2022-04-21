@@ -23,13 +23,19 @@ fn render(open_api open_api.OpenApi) string {
 
 pub fn build(path string, debug bool) ?string {
 	mut content := os.read_file(path) ?
-	content = escape_escaped_char(content) ?
-	raw_json := yaml.yaml_to_json(content, replace_tags: true, debug: int(debug)) ?
-	open_api := open_api.decode<open_api.OpenApi>(raw_json) ?
+
+	if path.ends_with('.yaml') || path.ends_with('.yml') {
+		content = escape_escaped_char(content) ?
+		content = yaml.yaml_to_json(content, replace_tags: true, debug: int(debug)) ?
+	} else if !path.ends_with('json') {
+		return error('Error: You must specify a valid json or yaml file')
+	}
+
+	open_api := open_api.decode<open_api.OpenApi>(content) ?
 	assert open_api.servers.len == 1 // Todo: properly handle this case
 
-	file_path := @VMODROOT + '/templated.v'
 	mut program := render(open_api)
+	file_path := @VMODROOT + '/templated.v'
 	os.write_file(file_path, program) ?
 	return file_path
 }
