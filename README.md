@@ -3,10 +3,10 @@ Create a portable binary from an OpenAPI Specification
 
 ## Usage
 
-Generate a binary `cli` from the yaml openAPI file
+Generate a binary `cli` from the yaml openAPI file with the given url as base.
 
 ```sh
-$ openapi2cli openapi.yaml --out-bin cli
+$ openapi2cli openapi.yaml http:localhost/8080 --out-bin cli
 ```
 
 ## Elements mandatory in the openapi spec
