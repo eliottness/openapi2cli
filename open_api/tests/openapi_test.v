@@ -42,5 +42,6 @@ fn test_open_api_struct_without_openapi() ? {
 }
 
 fn test_full_open_api_struct() ? {
-	build(@VMODROOT + '/open_api/testdata/open_api_complex.yaml', false)?
+	build(@VMODROOT + '/open_api/testdata/open_api_complex.yaml', 'https://srvc-moulinette.api.assistants.epita.fr',
+		false)?
 }
