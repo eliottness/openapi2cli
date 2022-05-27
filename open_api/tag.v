@@ -12,7 +12,7 @@ pub mut:
 
 pub fn (mut tag Tag) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<Tag>(object, 'name') ?
+	check_required<Tag>(object, 'name')?
 
 	for key, value in object {
 		match key {
@@ -20,7 +20,7 @@ pub fn (mut tag Tag) from_json(json Any) ? {
 				tag.name = value.str()
 			}
 			'externalDocs' {
-				tag.external_docs = decode<ExternalDocumentation>(value.json_str()) ?
+				tag.external_docs = decode<ExternalDocumentation>(value.json_str())?
 			}
 			'description' {
 				tag.description = value.str()

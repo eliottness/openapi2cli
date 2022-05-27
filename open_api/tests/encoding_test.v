@@ -2,8 +2,8 @@ import open_api
 import os
 
 fn test_encoding_struct() ? {
-	content := os.read_file(@VMODROOT + '/open_api/testdata/encoding.json') ?
-	encoding := open_api.decode<open_api.Encoding>(content) ?
+	content := os.read_file(@VMODROOT + '/open_api/testdata/encoding.json')?
+	encoding := open_api.decode<open_api.Encoding>(content)?
 
 	assert encoding.content_type == 'image/png, image/jpeg'
 	assert encoding.headers.len == 1

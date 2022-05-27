@@ -53,25 +53,25 @@ pub fn (mut parameter Parameter) from_json(json Any) ? {
 				parameter.allow_reserved = value.bool()
 			}
 			'schema' {
-				parameter.schema = from_json<Schema>(value) ?
+				parameter.schema = from_json<Schema>(value)?
 			}
 			'example' {
 				parameter.example = value
 			}
 			'examples' {
-				parameter.examples = decode_map_sumtype<Example>(value.json_str(), fake_predicat) ?
+				parameter.examples = decode_map_sumtype<Example>(value.json_str(), fake_predicat)?
 			}
 			'content' {
-				parameter.content = decode_map<MediaType>(value.json_str()) ?
+				parameter.content = decode_map<MediaType>(value.json_str())?
 			}
 			else {}
 		}
 	}
-	parameter.validate(object) ?
+	parameter.validate(object)?
 }
 
 fn (mut parameter Parameter) validate(object map[string]Any) ? {
-	check_required<Parameter>(object, 'in', 'name') ?
+	check_required<Parameter>(object, 'in', 'name')?
 
 	if 'example' in object && 'examples' in object {
 		return error('Failed Parameter decoding: "example" and "examples" are mutually exclusives')

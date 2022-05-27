@@ -21,21 +21,21 @@ pub mut:
 
 pub fn (mut operation Operation) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<Operation>(object, 'responses') ?
+	check_required<Operation>(object, 'responses')?
 
 	for key, value in json.as_map() {
 		match key {
 			'externalDocs' {
-				operation.external_docs = decode<ExternalDocumentation>(value.json_str()) ?
+				operation.external_docs = decode<ExternalDocumentation>(value.json_str())?
 			}
 			'operationId' {
 				operation.operation_id = value.str()
 			}
 			'requestBody' {
-				operation.request_body = from_json<RequestBody>(value) ?
+				operation.request_body = from_json<RequestBody>(value)?
 			}
 			'tags' {
-				operation.tags = decode_array_string(value.json_str()) ?
+				operation.tags = decode_array_string(value.json_str())?
 			}
 			'summary' {
 				operation.summary = value.str()
@@ -44,27 +44,27 @@ pub fn (mut operation Operation) from_json(json Any) ? {
 				operation.description = value.str()
 			}
 			'parameters' {
-				operation.parameters = decode<[]ObjectRef<Parameter>>(value.json_str()) ?
+				operation.parameters = decode<[]ObjectRef<Parameter>>(value.json_str())?
 			}
 			'responses' {
-				operation.responses = decode<Responses>(value.json_str()) ?
+				operation.responses = decode<Responses>(value.json_str())?
 			}
 			'callbacks' {
-				operation.callbacks = decode_map_sumtype<Callback>(value.json_str(), fake_predicat) ?
+				operation.callbacks = decode_map_sumtype<Callback>(value.json_str(), fake_predicat)?
 			}
 			'deprecated' {
 				operation.deprecated = value.bool()
 			}
 			'security' {
-				operation.security = decode_array<SecurityRequirement>(value.json_str()) ?
+				operation.security = decode_array<SecurityRequirement>(value.json_str())?
 			}
 			'servers' {
-				operation.servers = decode_array<Server>(value.json_str()) ?
+				operation.servers = decode_array<Server>(value.json_str())?
 			}
 			else {}
 		}
 	}
-	operation.validate(object) ?
+	operation.validate(object)?
 }
 
 fn (mut operation Operation) validate(object map[string]Any) ? {
@@ -115,7 +115,7 @@ pub mut:
 
 pub fn (mut external_doc ExternalDocumentation) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<ExternalDocumentation>(object, 'url') ?
+	check_required<ExternalDocumentation>(object, 'url')?
 
 	for key, value in object {
 		match key {

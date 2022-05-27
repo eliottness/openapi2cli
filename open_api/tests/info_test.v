@@ -3,7 +3,7 @@ import os
 
 fn test_basic_info_struct() ? {
 	content := '{ "title": "random", "version": "1.0.1" }'
-	info := open_api.decode<open_api.Info>(content) ?
+	info := open_api.decode<open_api.Info>(content)?
 	assert info.title == 'random'
 	assert info.version == '1.0.1'
 }
@@ -15,8 +15,8 @@ fn test_info_struct_without_required() ? {
 }
 
 fn test_full_info_struct() ? {
-	content := os.read_file(@VMODROOT + '/open_api/testdata/info.json') ?
-	info := open_api.decode<open_api.Info>(content) ?
+	content := os.read_file(@VMODROOT + '/open_api/testdata/info.json')?
+	info := open_api.decode<open_api.Info>(content)?
 	assert info.title == 'Sample Pet Store App'
 	assert info.version == '1.0.1'
 	assert info.description == 'This is a sample server for a pet store.'

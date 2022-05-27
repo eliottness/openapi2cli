@@ -2,7 +2,7 @@ import open_api
 
 fn test_header_struct() ? {
 	content := '{ "description": "details", "schema": { "type": "integer" } }'
-	header := open_api.decode<open_api.Header>(content) ?
+	header := open_api.decode<open_api.Header>(content)?
 
 	assert header.name == ''
 	assert header.location == ''

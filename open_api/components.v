@@ -21,40 +21,40 @@ pub fn (mut components Components) from_json(json Any) ? {
 		match key {
 			'securitySchemes' {
 				components.security_schemes = decode_map_sumtype<SecurityScheme>(value.json_str(),
-					check_key_regex) ?
+					check_key_regex)?
 			}
 			'requestBodies' {
 				components.request_bodies = decode_map_sumtype<RequestBody>(value.json_str(),
-					check_key_regex) ?
+					check_key_regex)?
 			}
 			'schemas' {
-				components.schemas = decode_map_sumtype<Schema>(value.json_str(), check_key_regex) ?
+				components.schemas = decode_map_sumtype<Schema>(value.json_str(), check_key_regex)?
 			}
 			'responses' {
 				components.responses = decode_map_sumtype<Response>(value.json_str(),
-					check_key_regex) ?
+					check_key_regex)?
 			}
 			'parameters' {
 				components.parameters = decode_map_sumtype<Parameter>(value.json_str(),
-					check_key_regex) ?
+					check_key_regex)?
 			}
 			'examples' {
-				components.examples = decode_map_sumtype<Example>(value.json_str(), check_key_regex) ?
+				components.examples = decode_map_sumtype<Example>(value.json_str(), check_key_regex)?
 			}
 			'headers' {
-				components.headers = decode_map_sumtype<Header>(value.json_str(), check_key_regex) ?
+				components.headers = decode_map_sumtype<Header>(value.json_str(), check_key_regex)?
 			}
 			'links' {
-				components.links = decode_map_sumtype<Link>(value.json_str(), check_key_regex) ?
+				components.links = decode_map_sumtype<Link>(value.json_str(), check_key_regex)?
 			}
 			'callbacks' {
 				components.callbacks = decode_map_sumtype<Callback>(value.json_str(),
-					check_key_regex) ?
+					check_key_regex)?
 			}
 			else {}
 		}
 	}
-	components.validate() ?
+	components.validate()?
 }
 
 fn check_keys(keys []string) ? {
@@ -66,15 +66,15 @@ fn check_keys(keys []string) ? {
 }
 
 fn (mut components Components) validate() ? {
-	check_keys(components.security_schemes.keys()) ?
-	check_keys(components.request_bodies.keys()) ?
-	check_keys(components.schemas.keys()) ?
-	check_keys(components.responses.keys()) ?
-	check_keys(components.parameters.keys()) ?
-	check_keys(components.examples.keys()) ?
-	check_keys(components.headers.keys()) ?
-	check_keys(components.links.keys()) ?
-	check_keys(components.callbacks.keys()) ?
+	check_keys(components.security_schemes.keys())?
+	check_keys(components.request_bodies.keys())?
+	check_keys(components.schemas.keys())?
+	check_keys(components.responses.keys())?
+	check_keys(components.parameters.keys())?
+	check_keys(components.examples.keys())?
+	check_keys(components.headers.keys())?
+	check_keys(components.links.keys())?
+	check_keys(components.callbacks.keys())?
 }
 
 pub fn (components Components) get_basic_http_schemes() []string {

@@ -3,6 +3,7 @@ module main
 import cli_builder
 import os
 import flag
+import net.urllib
 
 fn main() {
 	mut fp := flag.new_flag_parser(os.args)
@@ -15,13 +16,19 @@ fn main() {
 	debug := fp.bool('debug', `d`, false, 'Toggle Debug mode')
 	binary_name := fp.string('bin_name', `b`, 'cli', 'Output binary name (Default: cli)')
 
-	args := fp.finalize() ?
-	if args.len != 1 {
-		println('USAGE: ./openapi2cli <path to openapi file>')
+	args := fp.finalize()?
+	if args.len != 2 {
+		println('USAGE: ./openapi2cli <path to openapi file> <server url>')
 		return
 	}
 
-	yaml_filepath := args[0] ?
-	v_filepath := cli_builder.build(yaml_filepath, debug) ?
-	os.execvp('v', [v_filepath, '-o', binary_name]) ?
+	// Check that the server URL is valid
+	urllib.parse(args[1]) or {
+		println('Invalid server url')
+		println('USAGE: ./openapi2cli <path to openapi file> <server url>')
+		return
+	}
+
+	v_filepath := cli_builder.build(args[0], args[1], debug)?
+	os.execvp('v', [v_filepath, '-o', binary_name])?
 }

@@ -2,8 +2,8 @@ import open_api
 import os
 
 fn test_responses_struct() ? {
-	content := os.read_file(@VMODROOT + '/open_api/testdata/responses.json') ?
-	responses := open_api.decode<open_api.Responses>(content) ?
+	content := os.read_file(@VMODROOT + '/open_api/testdata/responses.json')?
+	responses := open_api.decode<open_api.Responses>(content)?
 
 	assert responses.len == 2
 

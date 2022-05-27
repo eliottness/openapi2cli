@@ -2,8 +2,8 @@ import open_api
 import os
 
 fn test_server_struct() ? {
-	content := os.read_file(@VMODROOT + '/open_api/testdata/server.json') ?
-	server := open_api.decode<open_api.Server>(content) ?
+	content := os.read_file(@VMODROOT + '/open_api/testdata/server.json')?
+	server := open_api.decode<open_api.Server>(content)?
 
 	assert server.url == 'https://{username}.gigantic-server.com:{port}/{basePath}'
 	assert server.description == 'The production API server'

@@ -99,6 +99,14 @@ pub fn execute_command(method string, path string, content_types []string, cmd C
 	response := http.fetch(config) ?
 	status_code := response.status().int()
 
+	if status_code >= 400 {
+		eprintln('Error: Received ' + status_code.str() + ' status code.')
+		if fail {
+			exit(1)
+		}
+		return
+	}
+
 	if 300 <= status_code && status_code < 400 {
 		eprintln(term.warn_message('Warning: You received a redirection status_code, to enable redirection add the -l flag.'))
 	}
@@ -109,13 +117,6 @@ pub fn execute_command(method string, path string, content_types []string, cmd C
 		println(pp.pretty(response.text))
 	} else {
 		println(response.text)
-	}
-
-	if fail {
-		if status_code >= 400 {
-			eprintln('Error: Received ' + status_code.str() + ' status code.')
-		}
-		exit(1)
 	}
 }
 
@@ -153,8 +154,8 @@ fn main() {
         name: "@operation.operation_id"
 		description: "@operation.description"
 		execute: fn (cmd Command) ? {
-			execute_command("@method", "@{api.servers[0].url}" + "@path",
-										@operation.get_request_body().content.keys(), cmd) ?
+			execute_command("@method", "@url" + "@path",
+							@operation.get_request_body().content.keys(), cmd) ?
 		}
     }
 	@if operation.get_request_body().content.keys().len > 0
