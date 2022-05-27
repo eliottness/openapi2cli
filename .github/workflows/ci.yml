@@ -23,6 +23,7 @@ jobs:
         run: |
           v install --git https://github.com/jdonnerstag/vlang-yaml
           v install --git https://github.com/BenStigsen/prettyprint
+          v install --git https://github.com/Leiyks/open_api
           v install
 
       - name: Check if code is formatted

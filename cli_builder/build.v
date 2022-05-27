@@ -1,10 +1,10 @@
 module cli_builder
 
 import os
-import open_api
+import openapi
 import yaml
 
-fn is_basic_http_required(open_api open_api.OpenApi) bool {
+fn is_basic_http_required(open_api openapi.OpenApi) bool {
 	security_schemes := open_api.components.get_basic_http_schemes()
 	mut required := false
 	for requirement in open_api.security {
@@ -15,7 +15,7 @@ fn is_basic_http_required(open_api open_api.OpenApi) bool {
 	return required
 }
 
-fn render(open_api open_api.OpenApi, server string) string {
+fn render(open_api openapi.OpenApi, server string) string {
 	required := is_basic_http_required(open_api)
 	api := open_api
 	url := server
@@ -32,7 +32,7 @@ pub fn build(path string, server string, debug bool) ?string {
 		return error('Error: You must specify a valid json or yaml file')
 	}
 
-	open_api := open_api.decode<open_api.OpenApi>(content)?
+	open_api := openapi.decode<openapi.OpenApi>(content)?
 
 	mut program := render(open_api, server)
 	file_path := @VMODROOT + '/templated.v'
