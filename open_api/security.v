@@ -8,7 +8,7 @@ pub type SecurityRequirement = map[string][]string
 pub fn (mut requirement SecurityRequirement) from_json(json Any) ? {
 	mut tmp := map[string][]string{}
 	for key, value in json.as_map() {
-		tmp[key] = decode_array_string(value.json_str()) ?
+		tmp[key] = decode_array_string(value.json_str())?
 	}
 	requirement = tmp
 	// Todo: Check that key match the '{name}' type
@@ -48,7 +48,7 @@ pub fn (mut security_scheme SecurityScheme) from_json(json Any) ? {
 				security_scheme.scheme = value.str()
 			}
 			'flows' {
-				security_scheme.flows = decode<OAuthFlows>(value.json_str()) ?
+				security_scheme.flows = decode<OAuthFlows>(value.json_str())?
 			}
 			'bearerFormat' {
 				security_scheme.bearer_format = value.str()
@@ -59,27 +59,27 @@ pub fn (mut security_scheme SecurityScheme) from_json(json Any) ? {
 			else {}
 		}
 	}
-	security_scheme.validate(object) ?
+	security_scheme.validate(object)?
 }
 
 fn (mut security_scheme SecurityScheme) validate(object map[string]Any) ? {
-	check_required<SecurityScheme>(object, 'type') ?
+	check_required<SecurityScheme>(object, 'type')?
 
 	match security_scheme.security_type {
 		'apiKey' {
-			check_required<SecurityScheme>(object, 'name', 'in') ?
+			check_required<SecurityScheme>(object, 'name', 'in')?
 			if security_scheme.location !in ['query', 'header', 'cookie'] {
 				return error('Failed SecurityScheme decoding: "in" is not valid $security_scheme.location')
 			}
 		}
 		'http' {
-			check_required<SecurityScheme>(object, 'scheme') ?
+			check_required<SecurityScheme>(object, 'scheme')?
 		}
 		'oauth2' {
-			check_required<SecurityScheme>(object, 'flows') ?
+			check_required<SecurityScheme>(object, 'flows')?
 		}
 		'openIdConnect' {
-			check_required<SecurityScheme>(object, 'openIdConnectUrl') ?
+			check_required<SecurityScheme>(object, 'openIdConnectUrl')?
 			if !check_url_regex(security_scheme.open_id_connect_url) {
 				return error('Failed SecurityScheme decoding: "OpenIdConnectUrl" do not match url regex expression')
 			}
@@ -104,20 +104,20 @@ pub fn (mut flows OAuthFlows) from_json(json Any) ? {
 	for key, value in json.as_map() {
 		match key {
 			'clientCredentials' {
-				flows.client_credentials = decode<OAuthFlow>(value.json_str()) ?
-				check_required<OAuthFlow>(value.as_map(), 'tokenUrl') ?
+				flows.client_credentials = decode<OAuthFlow>(value.json_str())?
+				check_required<OAuthFlow>(value.as_map(), 'tokenUrl')?
 			}
 			'authorizationCode' {
-				flows.authorization_code = decode<OAuthFlow>(value.json_str()) ?
-				check_required<OAuthFlow>(value.as_map(), 'authorizationUrl', 'tokenUrl') ?
+				flows.authorization_code = decode<OAuthFlow>(value.json_str())?
+				check_required<OAuthFlow>(value.as_map(), 'authorizationUrl', 'tokenUrl')?
 			}
 			'implicit' {
-				flows.implicit = decode<OAuthFlow>(value.json_str()) ?
-				check_required<OAuthFlow>(value.as_map(), 'authorizationUrl') ?
+				flows.implicit = decode<OAuthFlow>(value.json_str())?
+				check_required<OAuthFlow>(value.as_map(), 'authorizationUrl')?
 			}
 			'password' {
-				flows.password = decode<OAuthFlow>(value.json_str()) ?
-				check_required<OAuthFlow>(value.as_map(), 'tokenUrl') ?
+				flows.password = decode<OAuthFlow>(value.json_str())?
+				check_required<OAuthFlow>(value.as_map(), 'tokenUrl')?
 			}
 			else {}
 		}
@@ -136,7 +136,7 @@ pub mut:
 
 pub fn (mut flow OAuthFlow) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<OAuthFlow>(object, 'scopes') ?
+	check_required<OAuthFlow>(object, 'scopes')?
 
 	for key, value in object {
 		match key {
@@ -147,7 +147,7 @@ pub fn (mut flow OAuthFlow) from_json(json Any) ? {
 				flow.token_url = value.str()
 			}
 			'scopes' {
-				flow.scopes = decode_map_string(value.json_str()) ?
+				flow.scopes = decode_map_string(value.json_str())?
 			}
 			'refreshUrl' {
 				flow.refresh_url = value.str()
@@ -155,7 +155,7 @@ pub fn (mut flow OAuthFlow) from_json(json Any) ? {
 			else {}
 		}
 	}
-	flow.validate() ?
+	flow.validate()?
 }
 
 fn (mut flow OAuthFlow) validate() ? {

@@ -26,7 +26,7 @@ pub fn (mut header Header) from_json(json Any) ? {
 			else {}
 		}
 	}
-	header.validate(object) ?
+	header.validate(object)?
 }
 
 fn (mut header Header) validate(object map[string]Any) ? {

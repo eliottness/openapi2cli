@@ -3,8 +3,8 @@ import os
 import cli_builder { build }
 
 fn test_basic_open_api_struct() ? {
-	content := os.read_file(@VMODROOT + '/open_api/testdata/open_api_basic.json') ?
-	open_api := open_api.decode<open_api.OpenApi>(content) ?
+	content := os.read_file(@VMODROOT + '/open_api/testdata/open_api_basic.json')?
+	open_api := open_api.decode<open_api.OpenApi>(content)?
 	assert open_api.openapi == '3'
 	assert open_api.info.title == 'Sample Pet Store App'
 	assert open_api.info.version == '1.0.1'
@@ -42,5 +42,5 @@ fn test_open_api_struct_without_openapi() ? {
 }
 
 fn test_full_open_api_struct() ? {
-	build(@VMODROOT + '/open_api/testdata/open_api_complex.yaml', false) ?
+	build(@VMODROOT + '/open_api/testdata/open_api_complex.yaml', false)?
 }

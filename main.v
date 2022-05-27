@@ -16,7 +16,7 @@ fn main() {
 	debug := fp.bool('debug', `d`, false, 'Toggle Debug mode')
 	binary_name := fp.string('bin_name', `b`, 'cli', 'Output binary name (Default: cli)')
 
-	args := fp.finalize() ?
+	args := fp.finalize()?
 	if args.len != 2 {
 		println('USAGE: ./openapi2cli <path to openapi file> <server url>')
 		return
@@ -29,6 +29,6 @@ fn main() {
 		return
 	}
 
-	v_filepath := cli_builder.build(args[0], args[1], debug) ?
-	os.execvp('v', [v_filepath, '-o', binary_name]) ?
+	v_filepath := cli_builder.build(args[0], args[1], debug)?
+	os.execvp('v', [v_filepath, '-o', binary_name])?
 }

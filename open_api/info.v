@@ -15,7 +15,7 @@ pub mut:
 
 pub fn (mut info Info) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<Info>(object, 'title', 'version') ?
+	check_required<Info>(object, 'title', 'version')?
 
 	for key, value in object {
 		match key {
@@ -32,10 +32,10 @@ pub fn (mut info Info) from_json(json Any) ? {
 				info.description = value.str()
 			}
 			'contact' {
-				info.contact = decode<Contact>(value.json_str()) ?
+				info.contact = decode<Contact>(value.json_str())?
 			}
 			'license' {
-				info.license = decode<License>(value.json_str()) ?
+				info.license = decode<License>(value.json_str())?
 			}
 			else {}
 		}
@@ -84,7 +84,7 @@ pub mut:
 
 pub fn (mut license License) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<License>(object, 'name') ?
+	check_required<License>(object, 'name')?
 
 	for key, value in object {
 		match key {

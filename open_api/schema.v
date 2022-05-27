@@ -119,44 +119,44 @@ pub fn (mut schema Schema) from_json(json Any) ? {
 				schema.example = value
 			}
 			'discriminator' {
-				schema.discriminator = decode<Discriminator>(value.json_str()) ?
+				schema.discriminator = decode<Discriminator>(value.json_str())?
 			}
 			'xml' {
-				schema.xml = decode<XML>(value.json_str()) ?
+				schema.xml = decode<XML>(value.json_str())?
 			}
 			'externalDocs' {
-				schema.external_docs = decode<ExternalDocumentation>(value.json_str()) ?
+				schema.external_docs = decode<ExternalDocumentation>(value.json_str())?
 			}
 			'allOf' {
-				schema.all_of = from_json<Schema>(value) ?
+				schema.all_of = from_json<Schema>(value)?
 			}
 			'oneOf' {
-				schema.one_of = from_json<Schema>(value) ?
+				schema.one_of = from_json<Schema>(value)?
 			}
 			'anyOf' {
-				schema.any_of = from_json<Schema>(value) ?
+				schema.any_of = from_json<Schema>(value)?
 			}
 			'not' {
-				schema.not = from_json<Schema>(value) ?
+				schema.not = from_json<Schema>(value)?
 			}
 			'items' {
-				schema.items = from_json<Schema>(value) ?
+				schema.items = from_json<Schema>(value)?
 			}
 			'additionalProperties' {
-				schema.additional_properties = from_json<Schema>(value) ?
+				schema.additional_properties = from_json<Schema>(value)?
 			}
 			'required' {
-				schema.required = decode_array_string(value.json_str()) ?
+				schema.required = decode_array_string(value.json_str())?
 			}
 			'enum' {
-				schema.enum_values = decode_array_any(value.json_str()) ?
+				schema.enum_values = decode_array_any(value.json_str())?
 			}
 			'properties' {
-				schema.properties = decode_map_sumtype<Schema>(value.json_str(), fake_predicat) ?
+				schema.properties = decode_map_sumtype<Schema>(value.json_str(), fake_predicat)?
 			}
 			else {}
 		}
-		schema.validate(object) ?
+		schema.validate(object)?
 	}
 }
 
@@ -218,7 +218,7 @@ pub mut:
 
 pub fn (mut discriminator Discriminator) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<Discriminator>(object, 'propertyName') ?
+	check_required<Discriminator>(object, 'propertyName')?
 
 	for key, value in object {
 		match key {
@@ -226,7 +226,7 @@ pub fn (mut discriminator Discriminator) from_json(json Any) ? {
 				discriminator.property_name = value.str()
 			}
 			'mapping' {
-				discriminator.mapping = decode_map_string(value.json_str()) ?
+				discriminator.mapping = decode_map_string(value.json_str())?
 			}
 			else {}
 		}

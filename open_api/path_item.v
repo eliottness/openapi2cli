@@ -35,39 +35,39 @@ pub fn (mut path_item PathItem) from_json(json Any) ? {
 				path_item.description = value.str()
 			}
 			'get' {
-				path_item.get = decode<Operation>(value.json_str()) ?
+				path_item.get = decode<Operation>(value.json_str())?
 			}
 			'put' {
-				path_item.put = decode<Operation>(value.json_str()) ?
+				path_item.put = decode<Operation>(value.json_str())?
 			}
 			'post' {
-				path_item.post = decode<Operation>(value.json_str()) ?
+				path_item.post = decode<Operation>(value.json_str())?
 			}
 			'delete' {
-				path_item.delete = decode<Operation>(value.json_str()) ?
+				path_item.delete = decode<Operation>(value.json_str())?
 			}
 			'options' {
-				path_item.options = decode<Operation>(value.json_str()) ?
+				path_item.options = decode<Operation>(value.json_str())?
 			}
 			'head' {
-				path_item.head = decode<Operation>(value.json_str()) ?
+				path_item.head = decode<Operation>(value.json_str())?
 			}
 			'patch' {
-				path_item.patch = decode<Operation>(value.json_str()) ?
+				path_item.patch = decode<Operation>(value.json_str())?
 			}
 			'trace' {
-				path_item.trace = decode<Operation>(value.json_str()) ?
+				path_item.trace = decode<Operation>(value.json_str())?
 			}
 			'servers' {
-				path_item.servers = decode_array<Server>(value.json_str()) ?
+				path_item.servers = decode_array<Server>(value.json_str())?
 			}
 			'parameters' {
-				path_item.parameters = decode<[]ObjectRef<Parameter>>(value.json_str()) ?
+				path_item.parameters = decode<[]ObjectRef<Parameter>>(value.json_str())?
 			}
 			else {}
 		}
 	}
-	path_item.validate(object) ?
+	path_item.validate(object)?
 }
 
 fn (mut path_item PathItem) validate(object map[string]Any) ? {
@@ -154,7 +154,7 @@ pub fn (mut paths Paths) from_json(json Any) ? {
 		}
 
 		save_value[key] = value_key
-		tmp[key] = decode<PathItem>(value.json_str()) ?
+		tmp[key] = decode<PathItem>(value.json_str())?
 	}
 	paths = tmp
 }

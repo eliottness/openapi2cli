@@ -2,8 +2,8 @@ import open_api
 import os
 
 fn test_parameter_header_struct() ? {
-	content := os.read_file(@VMODROOT + '/open_api/testdata/parameter_header.json') ?
-	parameter := open_api.decode<open_api.Parameter>(content) ?
+	content := os.read_file(@VMODROOT + '/open_api/testdata/parameter_header.json')?
+	parameter := open_api.decode<open_api.Parameter>(content)?
 
 	assert parameter.name == 'token'
 	assert parameter.location == 'header'
@@ -13,8 +13,8 @@ fn test_parameter_header_struct() ? {
 }
 
 fn test_parameter_path_struct() ? {
-	content := os.read_file(@VMODROOT + '/open_api/testdata/parameter_path.json') ?
-	parameter := open_api.decode<open_api.Parameter>(content) ?
+	content := os.read_file(@VMODROOT + '/open_api/testdata/parameter_path.json')?
+	parameter := open_api.decode<open_api.Parameter>(content)?
 
 	assert parameter.name == 'username'
 	assert parameter.location == 'path'
@@ -24,8 +24,8 @@ fn test_parameter_path_struct() ? {
 }
 
 fn test_parameter_query_struct() ? {
-	content := os.read_file(@VMODROOT + '/open_api/testdata/parameter_query.json') ?
-	parameter := open_api.decode<open_api.Parameter>(content) ?
+	content := os.read_file(@VMODROOT + '/open_api/testdata/parameter_query.json')?
+	parameter := open_api.decode<open_api.Parameter>(content)?
 
 	assert parameter.name == 'id'
 	assert parameter.location == 'query'
@@ -36,8 +36,8 @@ fn test_parameter_query_struct() ? {
 }
 
 fn test_parameter_free_struct() ? {
-	content := os.read_file(@VMODROOT + '/open_api/testdata/parameter_free.json') ?
-	parameter := open_api.decode<open_api.Parameter>(content) ?
+	content := os.read_file(@VMODROOT + '/open_api/testdata/parameter_free.json')?
+	parameter := open_api.decode<open_api.Parameter>(content)?
 
 	assert parameter.name == 'freeForm'
 	assert parameter.location == 'query'
@@ -48,8 +48,8 @@ fn test_parameter_free_struct() ? {
 }
 
 fn test_parameter_complex_struct() ? {
-	content := os.read_file(@VMODROOT + '/open_api/testdata/parameter_complex.json') ?
-	parameter := open_api.decode<open_api.Parameter>(content) ?
+	content := os.read_file(@VMODROOT + '/open_api/testdata/parameter_complex.json')?
+	parameter := open_api.decode<open_api.Parameter>(content)?
 
 	assert parameter.name == 'coordinates'
 	assert parameter.location == 'query'

@@ -5,33 +5,33 @@ import json
 import regex
 
 pub fn decode<T>(src string) ?T {
-	res := raw_decode(src) ?
+	res := raw_decode(src)?
 	mut typ := T{}
-	typ.from_json(res) ?
+	typ.from_json(res)?
 	return typ
 }
 
 // ---------------------------------------- //
 
 pub fn decode_array<T>(src string) ?[]T {
-	json := raw_decode(src) ?
+	json := raw_decode(src)?
 	mut typ := []T{}
 
 	for value in json.arr() {
-		typ << decode<T>(value.json_str()) ?
+		typ << decode<T>(value.json_str())?
 	}
 	return typ
 }
 
 pub fn decode_array_string(src string) ?[]string {
-	json := raw_decode(src) ?
+	json := raw_decode(src)?
 	return json.arr().map(fn (elt Any) string {
 		return elt.str()
 	})
 }
 
 pub fn decode_array_any(src string) ?[]Any {
-	json := raw_decode(src) ?
+	json := raw_decode(src)?
 	return json.arr().map(fn (elt Any) Any {
 		return elt
 	})
@@ -40,17 +40,17 @@ pub fn decode_array_any(src string) ?[]Any {
 // ---------------------------------------- //
 
 pub fn decode_map<T>(src string) ?map[string]T {
-	json := raw_decode(src) ?
+	json := raw_decode(src)?
 	mut typ := map[string]T{}
 
 	for key, value in json.as_map() {
-		typ[key] = decode<T>(value.json_str()) ?
+		typ[key] = decode<T>(value.json_str())?
 	}
 	return typ
 }
 
 pub fn decode_map_string(src string) ?map[string]string {
-	json := raw_decode(src) ?
+	json := raw_decode(src)?
 	mut typ := map[string]string{}
 
 	for key, value in json.as_map() {
@@ -60,7 +60,7 @@ pub fn decode_map_string(src string) ?map[string]string {
 }
 
 pub fn decode_map_any(src string) ?map[string]Any {
-	json := raw_decode(src) ?
+	json := raw_decode(src)?
 	mut typ := map[string]Any{}
 
 	for key, value in json.as_map() {
@@ -70,11 +70,11 @@ pub fn decode_map_any(src string) ?map[string]Any {
 }
 
 pub fn decode_map_sumtype<T>(src string, verif fn (string) bool) ?map[string]ObjectRef<T> {
-	json := raw_decode(src) ?
+	json := raw_decode(src)?
 	mut typ := map[string]ObjectRef<T>{}
 
 	for key, value in json.as_map() {
-		typ[key] = from_json<T>(value) ?
+		typ[key] = from_json<T>(value)?
 	}
 	return typ
 }

@@ -2,8 +2,8 @@ import open_api
 import os
 
 fn test_security_scheme_struct_with_oauth() ? {
-	content := os.read_file(@VMODROOT + '/open_api/testdata/security_scheme.json') ?
-	security_scheme := open_api.decode<open_api.SecurityScheme>(content) ?
+	content := os.read_file(@VMODROOT + '/open_api/testdata/security_scheme.json')?
+	security_scheme := open_api.decode<open_api.SecurityScheme>(content)?
 	oauthflow := security_scheme.flows.implicit
 
 	assert security_scheme.security_type == 'oauth2'
@@ -15,7 +15,7 @@ fn test_security_scheme_struct_with_oauth() ? {
 
 fn test_security_scheme_struct_with_apikey() ? {
 	content := '{ "type": "apiKey", "name": "api_key", "in": "header" }'
-	security_scheme := open_api.decode<open_api.SecurityScheme>(content) ?
+	security_scheme := open_api.decode<open_api.SecurityScheme>(content)?
 	assert security_scheme.security_type == 'apiKey'
 	assert security_scheme.name == 'api_key'
 	assert security_scheme.location == 'header'
@@ -23,7 +23,7 @@ fn test_security_scheme_struct_with_apikey() ? {
 
 fn test_security_scheme_struct_with_http() ? {
 	content := '{ "type": "http", "scheme": "bearer", "bearerFormat": "JWT" }'
-	security_scheme := open_api.decode<open_api.SecurityScheme>(content) ?
+	security_scheme := open_api.decode<open_api.SecurityScheme>(content)?
 	assert security_scheme.security_type == 'http'
 	assert security_scheme.scheme == 'bearer'
 	assert security_scheme.bearer_format == 'JWT'
@@ -31,7 +31,7 @@ fn test_security_scheme_struct_with_http() ? {
 
 fn test_security_scheme_struct_basic() ? {
 	content := '{ "type": "http", "scheme": "basic" }'
-	security_scheme := open_api.decode<open_api.SecurityScheme>(content) ?
+	security_scheme := open_api.decode<open_api.SecurityScheme>(content)?
 	assert security_scheme.security_type == 'http'
 	assert security_scheme.scheme == 'basic'
 }

@@ -13,7 +13,7 @@ pub fn (mut responses Responses) from_json(json Any) ? {
 	mut tmp := map[string]ObjectRef<Response>{}
 	for key, value in json.as_map() {
 		if check_http_code_regex(key) || key == 'default' {
-			tmp[key] = from_json<Response>(value) ?
+			tmp[key] = from_json<Response>(value)?
 		} else {
 			return error('Failed Responses decoding: invalid http code value $key')
 		}
@@ -33,7 +33,7 @@ pub mut:
 
 pub fn (mut response Response) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<Response>(object, 'description') ?
+	check_required<Response>(object, 'description')?
 
 	for key, value in object {
 		match key {
@@ -41,13 +41,13 @@ pub fn (mut response Response) from_json(json Any) ? {
 				response.description = value.str()
 			}
 			'headers' {
-				response.headers = decode_map_sumtype<Header>(value.json_str(), fake_predicat) ?
+				response.headers = decode_map_sumtype<Header>(value.json_str(), fake_predicat)?
 			}
 			'content' {
-				response.content = decode_map<MediaType>(value.json_str()) ?
+				response.content = decode_map<MediaType>(value.json_str())?
 			}
 			'links' {
-				response.links = decode_map_sumtype<Link>(value.json_str(), fake_predicat) ?
+				response.links = decode_map_sumtype<Link>(value.json_str(), fake_predicat)?
 			}
 			else {}
 		}

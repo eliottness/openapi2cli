@@ -12,7 +12,7 @@ pub mut:
 
 pub fn (mut request_body RequestBody) from_json(json Any) ? {
 	object := json.as_map()
-	check_required<RequestBody>(object, 'content') ?
+	check_required<RequestBody>(object, 'content')?
 
 	for key, value in object {
 		match key {
@@ -20,7 +20,7 @@ pub fn (mut request_body RequestBody) from_json(json Any) ? {
 				request_body.description = value.str()
 			}
 			'content' {
-				request_body.content = decode_map<MediaType>(value.json_str()) ?
+				request_body.content = decode_map<MediaType>(value.json_str())?
 			}
 			'required' {
 				request_body.required = value.bool()
