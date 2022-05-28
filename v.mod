@@ -5,6 +5,7 @@ Module {
 	license: 'MIT'
 	dependencies: [
 		'https://github.com/jdonnerstag/vlang-yaml',
-		'https://github.com/BenStigsen/prettyprint'
+		'https://github.com/BenStigsen/prettyprint',
+		'https://github.com/Leiyks/openapi'
 	]
 }
