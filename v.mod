@@ -6,6 +6,6 @@ Module {
 	dependencies: [
 		'https://github.com/jdonnerstag/vlang-yaml',
 		'https://github.com/BenStigsen/prettyprint',
-		'https://github.com/Leiyks/open_api'
+		'https://github.com/Leiyks/openapi'
 	]
 }
