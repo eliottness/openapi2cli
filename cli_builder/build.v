@@ -15,10 +15,10 @@ fn is_basic_http_required(open_api openapi.OpenApi) bool {
 	return required
 }
 
-fn render(open_api openapi.OpenApi, server string) string {
+fn render(open_api openapi.OpenApi) string {
 	required := is_basic_http_required(open_api)
 	api := open_api
-	url := server
+	url := open_api.servers[0]
 	return $tmpl('templates/cli.tmpl')
 }
 
@@ -32,9 +32,11 @@ pub fn build(path string, server string, debug bool) ?string {
 		return error('Error: You must specify a valid json or yaml file')
 	}
 
-	open_api := openapi.decode<openapi.OpenApi>(content)?
+	mut open_api := openapi.decode<openapi.OpenApi>(content)?
 
-	mut program := render(open_api, server)
+	validate(mut open_api, server)?
+
+	mut program := render(open_api)
 	file_path := @VMODROOT + '/templated.v'
 	os.write_file(file_path, program)?
 	return file_path
