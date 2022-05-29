@@ -6,13 +6,13 @@ on:
 
 jobs:
   docker:
-    
+
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout ${{ github.event.repository.name }}
         uses: actions/checkout@master
-      
+
       - name: Kaniko build
         uses: aevea/action-kaniko@master
         with:

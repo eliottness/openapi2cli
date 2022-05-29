@@ -15,6 +15,7 @@ fn main() {
 
 	debug := fp.bool('debug', `d`, false, 'Toggle Debug mode')
 	binary_name := fp.string('bin_name', `b`, 'cli', 'Output binary name (Default: cli)')
+	server_url := fp.string('server_url', `s`, '', 'Server URL')
 
 	args := fp.finalize()?
 	if args.len != 2 {
@@ -23,10 +24,12 @@ fn main() {
 	}
 
 	// Check that the server URL is valid
-	urllib.parse(args[1]) or {
-		println('Invalid server url')
-		println('USAGE: ./openapi2cli <path to openapi file> <server url>')
-		return
+	if server_url.len != 0 {
+		urllib.parse(args[1]) or {
+			println('Invalid server url')
+			println('USAGE: ./openapi2cli <path to openapi file> <server url>')
+			return
+		}
 	}
 
 	v_filepath := cli_builder.build(args[0], args[1], debug)?
